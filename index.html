@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Developer Portfolio</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- LOADER -->
+  <div class="loader">
+    <div class="loader__spinner"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar__logo">MyPortfolio</div>
+    <ul class="navbar__links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#technologies">Technologies</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="navbar__toggle" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="hero">
+    <div class="hero__content">
+      <h1>Hello, I'm <span class="highlight">Mohd Sakib</span></h1>
+      <p>I’m a <strong>Developer</strong> specialized in creating outstanding digital experiences.</p>
+      <a href="#projects" class="btn primary-btn ">View My Work</a>
+      <a href="Mohd Sakib (1).pdf" download class="btn primary-btn ">Downloads Resume</a>
+    </div>
+    <div class="hero__image">
+      <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=450&q=80" alt="Hero image">
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about reveal">
+    <div class="about__text">
+      <h2>About Me</h2>
+      <p>
+        I am a passionate developer with experience in various technologies. I enjoy building clean, scalable, and efficient digital experiences.
+      </p>
+    </div>
+    <div class="about__img">
+      <img src="https://images.unsplash.com/photo-1536104968055-4d61aa56f46a?auto=format&fit=crop&w=400&q=80" alt="About Me">
+    </div>
+  </section>
+
+  <!-- TECHNOLOGIES SECTION -->
+  <section id="technologies" class="technologies reveal">
+    <h2>Technologies I Use</h2>
+    <div class="tech-list">
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-html5"></i></div>
+        <span>HTML5</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-css3-alt"></i></div>
+        <span>CSS3</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-js"></i></div>
+        <span>JavaScript</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-react"></i></div>
+        <span>React</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-node-js"></i></div>
+        <span>Node.js</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fas fa-database"></i></div>
+        <span>SQL / NoSQL</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-python"></i></div>
+        <span>Python</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-git"></i></div>
+        <span>Git</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-docker"></i></div>
+        <span>Docker</span>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon"><i class="fab fa-aws"></i></div>
+        <span>AWS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREELANCING SECTION -->
+  <section id="freelancing" class="freelancing reveal">
+    <div class="freelancing__content">
+      <h2>Available for Freelancing/Job</h2>
+      <p>I'm open for exciting freelance projects. Let's collaborate to turn your ideas into reality!</p>
+      <button id="contactBtn" class="btn primary-btn">Contact Me</button>
+    </div>
+    <!-- Modal -->
+    <div id="emailModal" class="modal">
+      <div class="modal__content">
+        <span class="modal__close">&times;</span>
+        <h3>Contact Me</h3>
+        <p>Feel free to reach out to me at:</p>
+        <p class="email">your.email@example.com</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS SECTION -->
+  <section id="projects" class="projects reveal">
+    <h2>Projects</h2>
+    <div class="projects__container">
+      <a href="https://github.com/yourusername/project-one" class="project-card" target="_blank">
+        <div class="project-info">
+          <h3>Project One</h3>
+          <p>A brief description of this project. Tech used: HTML, CSS, JS.</p>
+          <span class="btn">View on GitHub</span>
+        </div>
+      </a>
+      <a href="https://github.com/yourusername/project-two" class="project-card" target="_blank">
+        <div class="project-info">
+          <h3>Project Two</h3>
+          <p>A brief description of this project. Tech used: React, Node.js.</p>
+          <span class="btn">View on GitHub</span>
+        </div>
+      </a>
+      <a href="https://github.com/yourusername/project-three" class="project-card" target="_blank">
+        <div class="project-info">
+          <h3>Project Three</h3>
+          <p>A brief description of this project. Tech used: Python, SQL.</p>
+          <span class="btn">View on GitHub</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE SECTION -->
+  <section id="experience" class="experience reveal">
+    <h2>Experience</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2022 - Present</div>
+        <div class="timeline-content">
+          <h3>Company / Role</h3>
+          <p class="brief">Short highlights of your role. <span class="view-more">View More</span></p>
+          <div class="accordion-content">
+            <p>Detailed description of your responsibilities and achievements in this role.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2020 - 2022</div>
+        <div class="timeline-content">
+          <h3>Company / Role</h3>
+          <p class="brief">Short highlights of your role. <span class="view-more">View More</span></p>
+          <div class="accordion-content">
+            <p>Detailed description of your responsibilities and achievements in this role.</p>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2018 - 2020</div>
+        <div class="timeline-content">
+          <h3>Company / Role</h3>
+          <p class="brief">Short highlights of your role. <span class="view-more">View More</span></p>
+          <div class="accordion-content">
+            <p>Detailed description of your responsibilities and achievements in this role.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / CONTACT SECTION -->
+  <footer id="contact" class="footer reveal">
+    <h2>Let's Connect</h2>
+    <p>Feel free to reach out to me on any of these platforms.</p>
+    <div class="social-icons">
+      <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+    </div>
+    <p class="footer-copy">&copy; 2025 Mohd Sakib. All rights reserved.</p>
+  </footer>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button id="backToTop" class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+
+  <script src="index.js"></script>
+
+  
+</body>
+</html>
