@@ -1,82 +1,104 @@
-
-// Loader
+const loader = document.querySelector(".loader");
 window.addEventListener("load", () => {
-    const loader = document.querySelector(".loader");
-    loader.style.display = "none";
+  if (!loader) return;
+  loader.classList.add("loader--hidden");
 });
 
-// Smooth Scrolling
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-        behavior: 'smooth'
-    });
-    });
-});
+const navToggle = document.querySelector(".nav__toggle");
+const navLinks = document.querySelector(".nav__links");
+const navAnchors = document.querySelectorAll(".nav__links a");
 
-// Mobile Navbar Toggle
-const navbarToggle = document.querySelector(".navbar__toggle");
-const navbarLinks = document.querySelector(".navbar__links");
+if (navToggle && navLinks) {
+  navToggle.addEventListener("click", () => {
+    const open = navLinks.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", String(open));
+  });
+}
 
-navbarToggle.addEventListener("click", () => {
-    navbarLinks.classList.toggle("active");
-});
+navAnchors.forEach((anchor) => {
+  anchor.addEventListener("click", (event) => {
+    const targetId = anchor.getAttribute("href");
+    if (!targetId || !targetId.startsWith("#")) return;
 
-// Modal Functionality
-const modal = document.getElementById("emailModal");
-const contactBtn = document.getElementById("contactBtn");
-const closeBtn = document.querySelector(".modal__close");
+    const target = document.querySelector(targetId);
+    if (!target) return;
 
-contactBtn.addEventListener("click", () => {
-    modal.classList.add("show");
-});
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
 
-closeBtn.addEventListener("click", () => {
-    modal.classList.remove("show");
-});
-
-window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-    modal.classList.remove("show");
+    if (navLinks?.classList.contains("is-open")) {
+      navLinks.classList.remove("is-open");
+      navToggle?.setAttribute("aria-expanded", "false");
     }
+  });
 });
 
-// Accordion Functionality for Experience Section
-const viewMoreEls = document.querySelectorAll(".view-more");
-viewMoreEls.forEach((btn) => {
-    btn.addEventListener("click", () => {
-    const accordionContent = btn.closest(".timeline-content").querySelector(".accordion-content");
-    accordionContent.classList.toggle("open");
-    btn.textContent = accordionContent.classList.contains("open") ? "View Less" : "View More";
+const revealElements = document.querySelectorAll(".reveal");
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      revealObserver.unobserve(entry.target);
     });
+  },
+  { threshold: 0.14 }
+);
+
+revealElements.forEach((element) => revealObserver.observe(element));
+
+const sections = document.querySelectorAll("main section[id]");
+const navMap = new Map();
+navAnchors.forEach((anchor) => {
+  const id = anchor.getAttribute("href")?.slice(1);
+  if (id) navMap.set(id, anchor);
 });
 
-// Back to Top Button
+const setActiveSectionLink = () => {
+  let activeSection = "home";
+  const offset = window.scrollY + 140;
+
+  sections.forEach((section) => {
+    if (offset >= section.offsetTop) activeSection = section.id;
+  });
+
+  navMap.forEach((anchor, id) => {
+    anchor.classList.toggle("is-active", id === activeSection);
+  });
+};
+
+window.addEventListener("scroll", setActiveSectionLink);
+window.addEventListener("load", setActiveSectionLink);
+
+const experienceToggles = document.querySelectorAll(".exp-toggle");
+experienceToggles.forEach((button) => {
+  button.addEventListener("click", () => {
+    const details = button
+      .closest(".experience-item")
+      ?.querySelector(".exp-details");
+
+    if (!details) return;
+
+    const open = details.classList.toggle("is-open");
+    button.textContent = open ? "View less" : "View details";
+    button.setAttribute("aria-expanded", String(open));
+  });
+});
+
 const backToTop = document.getElementById("backToTop");
+const toggleBackToTop = () => {
+  if (!backToTop) return;
+  backToTop.classList.toggle("is-visible", window.scrollY > 420);
+};
 
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-    backToTop.classList.add("visible");
-    } else {
-    backToTop.classList.remove("visible");
-    }
+window.addEventListener("scroll", toggleBackToTop);
+toggleBackToTop();
+
+backToTop?.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-backToTop.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-// Reveal Animation
-document.addEventListener("DOMContentLoaded", () => {
-    const reveals = document.querySelectorAll(".reveal");
-    const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting) {
-        entry.target.classList.add("active");
-        obs.unobserve(entry.target);
-        }
-    });
-    }, { threshold: 0.1 });
-    reveals.forEach(el => observer.observe(el));
-});
+const yearElement = document.getElementById("year");
+if (yearElement) {
+  yearElement.textContent = String(new Date().getFullYear());
+}
