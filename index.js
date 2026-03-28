@@ -15,12 +15,14 @@ const closeNavMenu = () => {
   navLinks.classList.remove("is-open");
   navToggle.setAttribute("aria-expanded", "false");
   navToggle.innerHTML = '<i class="bi bi-list"></i>';
+  document.body.classList.remove("menu-open");
 };
 
 if (navToggle && navLinks) {
   navToggle.addEventListener("click", () => {
     const open = navLinks.classList.toggle("is-open");
     navToggle.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("menu-open", open);
     navToggle.innerHTML = open
       ? '<i class="bi bi-x-lg"></i>'
       : '<i class="bi bi-list"></i>';
@@ -48,6 +50,14 @@ document.addEventListener("click", (event) => {
   if (!(target instanceof Element)) return;
   if (navLinks.contains(target) || navToggle.contains(target)) return;
   closeNavMenu();
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeNavMenu();
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 820) closeNavMenu();
 });
 
 const revealElements = document.querySelectorAll(".reveal");
