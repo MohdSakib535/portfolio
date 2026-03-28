@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <link
@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="index.css" />
 </head>
 <body>
+  <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
+  <div class="noise-layer" aria-hidden="true"></div>
   <div class="page-glow page-glow--one" aria-hidden="true"></div>
   <div class="page-glow page-glow--two" aria-hidden="true"></div>
 
@@ -51,6 +53,7 @@
         <li><a href="#projects">Projects</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#education">Education</a></li>
+        <li><a href="#freelance">Freelance</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
 
@@ -73,6 +76,12 @@
           deployments, focused on reliable APIs and high-scale backend architecture.
         </p>
 
+        <div class="hero__badges reveal">
+          <span>FastAPI / Django</span>
+          <span>Kafka Workflows</span>
+          <span>GenAI Integrations</span>
+        </div>
+
         <div class="hero__cta reveal">
           <a href="#projects" class="btn btn--primary">Explore Projects</a>
           <a href="Mohd_Sakib_2026.pdf" class="btn btn--ghost" download>Download Resume</a>
@@ -92,6 +101,21 @@
             <p>LangChain-powered intelligent backend features</p>
           </article>
         </div>
+
+        <div class="hero__quick reveal">
+          <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-github"></i>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-linkedin"></i>
+            LinkedIn
+          </a>
+          <a href="mailto:mohdsakib9398@gmail.com">
+            <i class="bi bi-envelope"></i>
+            Email
+          </a>
+        </div>
       </div>
 
       <aside class="profile-card reveal">
@@ -99,8 +123,13 @@
           <span class="pulse"></span>
           Open to backend and platform engineering roles
         </p>
-        <h2>Mohd Sakib</h2>
-        <p class="profile-card__role">Software Engineer at Kellton</p>
+        <div class="profile-card__intro">
+          <div class="profile-card__avatar">MS</div>
+          <div>
+            <h2>Mohd Sakib</h2>
+            <p class="profile-card__role">Software Engineer at Kellton</p>
+          </div>
+        </div>
 
         <ul class="profile-card__list">
           <li>
@@ -137,35 +166,79 @@
         <h2>Engineer focused on scalable platforms and applied AI</h2>
       </div>
 
-      <div class="about-grid">
-        <p class="about-text reveal">
-          Software Engineer with 4+ years of experience in backend systems,
-          event-driven architecture, and AI-powered applications. Skilled in FastAPI,
-          Django, Kafka, LangChain, and cloud-native deployments. Experienced in
-          building scalable APIs, multi-tenant platforms, and RAG-based GenAI
-          solutions that convert product requirements into reliable production systems.
-        </p>
+      <div class="about-layout">
+        <article class="about-spotlight reveal">
+          <p class="about-spotlight__eyebrow">Software Engineer</p>
+          <h3>Designing resilient architecture and AI-powered workflows that scale.</h3>
+          <p>
+            I build production backend systems with FastAPI and Django, architect
+            event-driven services with Kafka, and deliver cloud-ready APIs that stay
+            fast under real-world load. My core focus is turning complex product
+            requirements into stable, maintainable platforms.
+          </p>
+          <div class="about-spotlight__chips">
+            <span>FastAPI + Django</span>
+            <span>Kafka + Celery</span>
+            <span>RAG + LangChain</span>
+            <span>Azure + AWS</span>
+          </div>
+          <div class="about-spotlight__stats">
+            <article>
+              <h4>4+ Years</h4>
+              <p>Backend engineering delivery</p>
+            </article>
+            <article>
+              <h4>Multi-Tenant</h4>
+              <p>SaaS platform architecture</p>
+            </article>
+            <article>
+              <h4>Production AI</h4>
+              <p>RAG and automation pipelines</p>
+            </article>
+          </div>
+        </article>
 
-        <div class="about-highlights">
-          <article class="highlight-card reveal">
-            <i class="bi bi-diagram-3"></i>
-            <h3>Backend Architecture</h3>
-            <p>Designing scalable services for high-concurrency workloads.</p>
+        <div class="about-stack">
+          <article class="about-card reveal">
+            <span class="about-card__icon"><i class="bi bi-diagram-3"></i></span>
+            <h3>System Design Mindset</h3>
+            <p>
+              I model services for clean boundaries, high concurrency, and predictable
+              performance with clear scaling paths.
+            </p>
           </article>
-          <article class="highlight-card reveal">
-            <i class="bi bi-lightning-charge"></i>
-            <h3>Event Processing</h3>
-            <p>Kafka-driven pipelines for real-time analytics and integrations.</p>
+          <article class="about-card reveal">
+            <span class="about-card__icon"><i class="bi bi-lightning-charge"></i></span>
+            <h3>Real-Time Processing</h3>
+            <p>
+              Event pipelines powered by Kafka and async workers keep data flowing with
+              low latency and fault tolerance.
+            </p>
           </article>
-          <article class="highlight-card reveal">
-            <i class="bi bi-gear"></i>
-            <h3>Cloud & DevOps</h3>
-            <p>Dockerized delivery on AWS and Azure with CI/CD workflows.</p>
+          <article class="about-card reveal">
+            <span class="about-card__icon"><i class="bi bi-robot"></i></span>
+            <h3>Applied GenAI</h3>
+            <p>
+              I ship RAG workflows with chunking, embeddings, retrieval tuning, and
+              grounded response generation.
+            </p>
           </article>
-          <article class="highlight-card reveal">
-            <i class="bi bi-people"></i>
-            <h3>GenAI Features</h3>
-            <p>LangChain-based summarization, retrieval, and smart automation.</p>
+          <article class="about-card reveal">
+            <span class="about-card__icon"><i class="bi bi-cloud-check"></i></span>
+            <h3>Cloud + DevOps Execution</h3>
+            <p>
+              Containerized delivery with CI/CD, observability, and production-focused
+              deployment workflows.
+            </p>
+          </article>
+          <article class="about-card about-card--wide reveal">
+            <h3>What I Build End-to-End</h3>
+            <ul class="about-points">
+              <li>Scalable APIs for business-critical products</li>
+              <li>Role-based, secure multi-tenant backend platforms</li>
+              <li>LLM features for summarization, retrieval, and decision support</li>
+              <li>Reliable data infrastructure using PostgreSQL, MongoDB, and Redis</li>
+            </ul>
           </article>
         </div>
       </div>
@@ -395,12 +468,36 @@
       </div>
     </section>
 
+    <section id="freelance" class="section container">
+      <div class="freelance-panel reveal">
+        <p class="section-head__eyebrow">Freelance</p>
+        <h2>Open to freelance backend and AI integration work</h2>
+        <p>
+          I’m available for selected freelance projects involving backend architecture,
+          API development, event-driven systems, and production-ready GenAI features.
+        </p>
+        <ul class="freelance-points">
+          <li>FastAPI / Django backend design and development</li>
+          <li>Scalable API and database architecture for SaaS products</li>
+          <li>RAG pipelines and LLM feature integration in existing platforms</li>
+          <li>Performance optimization and production hardening</li>
+        </ul>
+        <a class="btn btn--primary" href="mailto:mohdsakib9398@gmail.com">
+          Let’s Discuss Your Project
+        </a>
+      </div>
+    </section>
+
     <section id="contact" class="section container">
       <div class="contact-panel reveal">
         <p class="section-head__eyebrow">Contact</p>
         <h2>Let’s build scalable backend products</h2>
         <p>
           Open to software engineering, backend platform, and AI-integrated product roles.
+        </p>
+        <p class="contact-panel__email">
+          <i class="bi bi-envelope"></i>
+          <a href="mailto:mohdsakib9398@gmail.com">mohdsakib9398@gmail.com</a>
         </p>
         <div class="contact-panel__actions">
           <a class="btn btn--primary" href="mailto:mohdsakib9398@gmail.com">Email Me</a>
