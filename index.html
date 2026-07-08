@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Modern portfolio of Mohd Sakib, backend engineer focused on scalable APIs, real-time systems, and cloud-ready architecture."
+    content="Portfolio of Mohd Sakib — backend engineer building scalable APIs, event-driven platforms, and production GenAI systems."
   />
-  <title>Mohd Sakib | Software Engineer</title>
+  <title>Mohd Sakib — Backend Engineer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap"
     rel="stylesheet"
   />
   <link
@@ -21,499 +21,623 @@
   <link rel="stylesheet" href="index.css" />
 </head>
 <body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="spotlight" aria-hidden="true"></div>
+  <svg class="goo-cursor" aria-hidden="true">
+    <defs>
+      <filter id="gooey">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b" />
+        <feColorMatrix in="b" mode="matrix"
+          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -12" result="goo" />
+        <feBlend in="SourceGraphic" in2="goo" />
+      </filter>
+    </defs>
+    <g class="goo-cursor__group" filter="url(#gooey)"></g>
+    <circle class="goo-cursor__dot" r="3"></circle>
+  </svg>
   <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
-  <div class="noise-layer" aria-hidden="true"></div>
-  <div class="page-glow page-glow--one" aria-hidden="true"></div>
-  <div class="page-glow page-glow--two" aria-hidden="true"></div>
+
+  <div class="social-rail" aria-hidden="true">
+    <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" tabindex="-1"><i class="bi bi-github"></i></a>
+    <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer" tabindex="-1"><i class="bi bi-linkedin"></i></a>
+    <a href="mailto:mohdsakib9398@gmail.com" tabindex="-1"><i class="bi bi-envelope"></i></a>
+    <span class="social-rail__line"></span>
+  </div>
+
+  <div class="theme-dock" role="group" aria-label="Accent color">
+    <span class="theme-dock__label">Accent</span>
+    <button class="swatch is-active" data-accent="#cdfb45" style="--sw:#cdfb45" aria-label="Lime accent"></button>
+    <button class="swatch" data-accent="#ff9f5a" style="--sw:#ff9f5a" aria-label="Amber accent"></button>
+    <button class="swatch" data-accent="#4fd7ff" style="--sw:#4fd7ff" aria-label="Cyan accent"></button>
+    <button class="swatch" data-accent="#c4a2ff" style="--sw:#c4a2ff" aria-label="Violet accent"></button>
+  </div>
 
   <div class="loader" aria-hidden="true">
-    <span class="loader__spinner"></span>
+    <div class="loader__inner">
+      <span class="loader__mono">initializing_system</span>
+      <span class="loader__bar"><span class="loader__fill"></span></span>
+    </div>
   </div>
 
   <header class="site-header">
     <nav class="nav container">
       <a href="#home" class="brand">
-        <span class="brand__dot"></span>
-        <span class="brand__name">Mohd Sakib</span>
+        <span class="brand__mark">MS</span>
+        <span class="brand__meta">
+          <span class="brand__name">Mohd Sakib</span>
+          <span class="brand__role">backend engineer</span>
+        </span>
       </a>
-
-      <button
-        class="nav__toggle"
-        aria-label="Toggle navigation"
-        aria-controls="navLinks"
-        aria-expanded="false"
-      >
-        <i class="bi bi-list"></i>
-      </button>
 
       <ul class="nav__links" id="navLinks">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#freelance">Freelance</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#home"><span>01</span> Home</a></li>
+        <li><a href="#about"><span>02</span> About</a></li>
+        <li><a href="#architecture"><span>03</span> Architecture</a></li>
+        <li><a href="#stack"><span>04</span> Stack</a></li>
+        <li><a href="#work"><span>05</span> Work</a></li>
+        <li><a href="#journey"><span>06</span> Journey</a></li>
+        <li><a href="#contact"><span>07</span> Contact</a></li>
+        <li class="nav__drawer-foot" aria-hidden="true">
+          <div class="nav__drawer-accent">
+            <span>Accent</span>
+            <button class="swatch is-active" data-accent="#cdfb45" style="--sw:#cdfb45" aria-label="Lime accent"></button>
+            <button class="swatch" data-accent="#ff9f5a" style="--sw:#ff9f5a" aria-label="Amber accent"></button>
+            <button class="swatch" data-accent="#4fd7ff" style="--sw:#4fd7ff" aria-label="Cyan accent"></button>
+            <button class="swatch" data-accent="#c4a2ff" style="--sw:#c4a2ff" aria-label="Violet accent"></button>
+          </div>
+          <div class="nav__drawer-social">
+            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="mailto:mohdsakib9398@gmail.com" aria-label="Email"><i class="bi bi-envelope"></i></a>
+            <a class="nav__drawer-resume" href="MohdSakib_Resume.pdf" download><i class="bi bi-arrow-down-short"></i> Résumé</a>
+          </div>
+        </li>
       </ul>
 
-      <a class="nav__resume" href="MohdSakib_Resume.pdf" download>
-        <i class="bi bi-download"></i>
-        Resume
-      </a>
+      <div class="nav__side">
+        <button class="nav__cmd" id="cmdTrigger" aria-label="Open command palette">
+          <i class="bi bi-command"></i>
+          <span>K</span>
+        </button>
+        <a class="nav__resume" href="MohdSakib_Resume.pdf" download>
+          <i class="bi bi-arrow-down-short"></i>
+          Résumé
+        </a>
+        <button
+          class="nav__toggle"
+          aria-label="Toggle navigation"
+          aria-controls="navLinks"
+          aria-expanded="false"
+        >
+          <span></span><span></span>
+        </button>
+      </div>
     </nav>
   </header>
 
   <main>
-    <section id="home" class="hero container">
-      <div class="hero__content">
-        <p class="eyebrow reveal">Software Engineer • Backend Systems • GenAI</p>
-        <h1 class="hero__title reveal">
-          Building scalable backend systems, event-driven platforms, and AI-powered products.
-        </h1>
-        <p class="hero__summary reveal">
-          4+ years of experience in FastAPI, Django, Kafka, LangChain, and cloud-native
-          deployments, focused on reliable APIs and high-scale backend architecture.
-        </p>
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <div class="hero__aura" aria-hidden="true"></div>
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <p class="hero__status reveal">
+            <span class="dot"></span>
+            Available for roles &amp; freelance — <span id="localClock">--:--</span> IST
+          </p>
 
-        <div class="hero__badges reveal">
-          <span>FastAPI / Django</span>
-          <span>Kafka Workflows</span>
-          <span>GenAI Integrations</span>
-        </div>
+          <h1 class="hero__title">
+            <span class="reveal line">I build</span>
+            <span class="reveal line">
+              <em>scalable</em> backends
+            </span>
+            <span class="reveal line">that don't
+              <span class="rotator" aria-hidden="true">
+                <span class="rotator__word">break</span>
+                <span class="rotator__word">flinch</span>
+                <span class="rotator__word">sleep</span>
+                <span class="rotator__word">buckle</span>
+              </span>
+              <span class="visually-hidden">break under load</span>
+            </span>
+          </h1>
 
-        <div class="hero__cta reveal">
-          <a href="#projects" class="btn btn--primary">Explore Projects</a>
-          <a href="Mohd_Sakib_2026.pdf" class="btn btn--ghost" download>Download Resume</a>
-        </div>
+          <p class="hero__summary reveal">
+            I'm <strong>Mohd Sakib</strong> — a software engineer with 4+ years shipping
+            production APIs, event-driven pipelines with Kafka, and grounded GenAI
+            features with LangChain, FastAPI &amp; Django.
+          </p>
 
-        <div class="hero__meta reveal">
-          <article class="meta-card">
-            <h3>4+ Years</h3>
-            <p>Production backend engineering experience</p>
-          </article>
-          <article class="meta-card">
-            <h3>Event-Driven</h3>
-            <p>Kafka-based pipelines and real-time processing</p>
-          </article>
-          <article class="meta-card">
-            <h3>AI Integrated</h3>
-            <p>LangChain-powered intelligent backend features</p>
-          </article>
-        </div>
+          <div class="hero__cta reveal">
+            <a href="#work" class="btn btn--primary" data-magnetic>
+              <span>View selected work</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="MohdSakib_Resume.pdf" class="btn btn--ghost" download data-magnetic>
+              <span>Download résumé</span>
+            </a>
+          </div>
 
-        <div class="hero__quick reveal">
-          <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
-            <i class="bi bi-github"></i>
-            GitHub
-          </a>
-          <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer">
-            <i class="bi bi-linkedin"></i>
-            LinkedIn
-          </a>
-          <a href="mailto:mohdsakib9398@gmail.com">
-            <i class="bi bi-envelope"></i>
-            Email
-          </a>
-        </div>
-      </div>
-
-      <aside class="profile-card reveal">
-        <p class="profile-card__status">
-          <span class="pulse"></span>
-          Open to backend and platform engineering roles
-        </p>
-        <div class="profile-card__intro">
-          <div class="profile-card__avatar">MS</div>
-          <div>
-            <h2>Mohd Sakib</h2>
-            <p class="profile-card__role">Software Engineer at Kellton</p>
+          <div class="hero__social reveal">
+            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="mailto:mohdsakib9398@gmail.com" aria-label="Email"><i class="bi bi-envelope"></i></a>
+            <span class="hero__social-loc"><i class="bi bi-geo-alt"></i> New Delhi, India</span>
           </div>
         </div>
 
-        <ul class="profile-card__list">
-          <li>
-            <i class="bi bi-geo-alt"></i>
-            Badarpur Border, New Delhi
-          </li>
-          <li>
-            <i class="bi bi-telephone"></i>
-            <a href="tel:+919398980477">+91-9398980477</a>
-          </li>
-          <li>
-            <i class="bi bi-envelope"></i>
-            <a href="mailto:mohdsakib9398@gmail.com">mohdsakib9398@gmail.com</a>
-          </li>
-          <li>
-            <i class="bi bi-github"></i>
-            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
-              github.com/MohdSakib535
-            </a>
-          </li>
-          <li>
-            <i class="bi bi-linkedin"></i>
-            <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer">
-              linkedin.com/in/mohdsakibb
-            </a>
-          </li>
-        </ul>
-      </aside>
+        <aside class="hero__panel reveal">
+          <div class="terminal">
+            <div class="terminal__bar">
+              <span></span><span></span><span></span>
+              <p class="terminal__title">~/mohd-sakib — zsh</p>
+            </div>
+            <div class="terminal__body">
+              <p><span class="t-prompt">➜</span> <span class="t-cmd">whoami</span></p>
+              <p class="t-out">Software Engineer @ Kellton</p>
+              <p><span class="t-prompt">➜</span> <span class="t-cmd">cat stack.json</span></p>
+              <p class="t-out">{</p>
+              <p class="t-out">&nbsp;&nbsp;<span class="t-key">"apis"</span>: <span class="t-val">"FastAPI · Django · DRF"</span>,</p>
+              <p class="t-out">&nbsp;&nbsp;<span class="t-key">"events"</span>: <span class="t-val">"Kafka · Celery"</span>,</p>
+              <p class="t-out">&nbsp;&nbsp;<span class="t-key">"ai"</span>: <span class="t-val">"LangChain · RAG"</span>,</p>
+              <p class="t-out">&nbsp;&nbsp;<span class="t-key">"cloud"</span>: <span class="t-val">"AWS · Azure · Docker"</span></p>
+              <p class="t-out">}</p>
+              <p><span class="t-prompt">➜</span> <span class="t-cmd">status</span> <span class="t-cursor"></span></p>
+            </div>
+          </div>
+
+          <div class="hero__stats">
+            <div class="stat">
+              <strong>4+</strong>
+              <span>Years in production backend</span>
+            </div>
+            <div class="stat">
+              <strong>Kafka</strong>
+              <span>Event-driven pipelines</span>
+            </div>
+            <div class="stat">
+              <strong>RAG</strong>
+              <span>Applied GenAI in prod</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span>FastAPI</span><i>✦</i><span>Django</span><i>✦</i><span>Kafka</span><i>✦</i><span>LangChain</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>MongoDB</span><i>✦</i><span>Redis</span><i>✦</i><span>Docker</span><i>✦</i><span>GraphQL</span><i>✦</i><span>Celery</span><i>✦</i><span>AWS</span><i>✦</i><span>Azure</span><i>✦</i>
+          <span>FastAPI</span><i>✦</i><span>Django</span><i>✦</i><span>Kafka</span><i>✦</i><span>LangChain</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>MongoDB</span><i>✦</i><span>Redis</span><i>✦</i><span>Docker</span><i>✦</i><span>GraphQL</span><i>✦</i><span>Celery</span><i>✦</i><span>AWS</span><i>✦</i><span>Azure</span><i>✦</i>
+        </div>
+      </div>
     </section>
 
+    <!-- ABOUT -->
     <section id="about" class="section container">
       <div class="section-head reveal">
-        <p class="section-head__eyebrow">About</p>
-        <h2>Engineer focused on scalable platforms and applied AI</h2>
+        <p class="marker">(02) — About</p>
+        <h2 class="section-title">
+          Turning messy product requirements into <em>stable, maintainable</em> platforms.
+        </h2>
       </div>
 
-      <div class="about-layout">
-        <article class="about-spotlight reveal">
-          <p class="about-spotlight__eyebrow">Software Engineer</p>
-          <h3>Designing resilient architecture and AI-powered workflows that scale.</h3>
-          <p>
-            I build production backend systems with FastAPI and Django, architect
-            event-driven services with Kafka, and deliver cloud-ready APIs that stay
-            fast under real-world load. My core focus is turning complex product
-            requirements into stable, maintainable platforms.
+      <div class="bento">
+        <article class="bento__cell bento__cell--lead reveal">
+          <p class="bento__eyebrow">The short version</p>
+          <p class="bento__lead-text">
+            I design resilient architecture and AI-powered workflows that stay fast under
+            real-world load — clean service boundaries, high concurrency, and predictable
+            performance with clear scaling paths.
           </p>
-          <div class="about-spotlight__chips">
-            <span>FastAPI + Django</span>
-            <span>Kafka + Celery</span>
-            <span>RAG + LangChain</span>
-            <span>Azure + AWS</span>
-          </div>
-          <div class="about-spotlight__stats">
-            <article>
-              <h4>4+ Years</h4>
-              <p>Backend engineering delivery</p>
-            </article>
-            <article>
-              <h4>Multi-Tenant</h4>
-              <p>SaaS platform architecture</p>
-            </article>
-            <article>
-              <h4>Production AI</h4>
-              <p>RAG and automation pipelines</p>
-            </article>
+          <div class="bento__tags">
+            <span>System design</span>
+            <span>Multi-tenant SaaS</span>
+            <span>Real-time processing</span>
+            <span>Cloud + DevOps</span>
           </div>
         </article>
 
-        <div class="about-stack">
-          <article class="about-card reveal">
-            <span class="about-card__icon"><i class="bi bi-diagram-3"></i></span>
-            <h3>System Design Mindset</h3>
-            <p>
-              I model services for clean boundaries, high concurrency, and predictable
-              performance with clear scaling paths.
-            </p>
-          </article>
-          <article class="about-card reveal">
-            <span class="about-card__icon"><i class="bi bi-lightning-charge"></i></span>
-            <h3>Real-Time Processing</h3>
-            <p>
-              Event pipelines powered by Kafka and async workers keep data flowing with
-              low latency and fault tolerance.
-            </p>
-          </article>
-          <article class="about-card reveal">
-            <span class="about-card__icon"><i class="bi bi-robot"></i></span>
-            <h3>Applied GenAI</h3>
-            <p>
-              I ship RAG workflows with chunking, embeddings, retrieval tuning, and
-              grounded response generation.
-            </p>
-          </article>
-          <article class="about-card reveal">
-            <span class="about-card__icon"><i class="bi bi-cloud-check"></i></span>
-            <h3>Cloud + DevOps Execution</h3>
-            <p>
-              Containerized delivery with CI/CD, observability, and production-focused
-              deployment workflows.
-            </p>
-          </article>
-          <article class="about-card about-card--wide reveal">
-            <h3>What I Build End-to-End</h3>
-            <ul class="about-points">
-              <li>Scalable APIs for business-critical products</li>
-              <li>Role-based, secure multi-tenant backend platforms</li>
-              <li>LLM features for summarization, retrieval, and decision support</li>
-              <li>Reliable data infrastructure using PostgreSQL, MongoDB, and Redis</li>
-            </ul>
-          </article>
+        <article class="bento__cell reveal">
+          <span class="bento__icon"><i class="bi bi-diagram-3"></i></span>
+          <h3>System design mindset</h3>
+          <p>Services modeled for clean boundaries, concurrency, and predictable performance.</p>
+        </article>
+
+        <article class="bento__cell reveal">
+          <span class="bento__icon"><i class="bi bi-lightning-charge"></i></span>
+          <h3>Real-time processing</h3>
+          <p>Kafka + async workers keep data flowing with low latency and fault tolerance.</p>
+        </article>
+
+        <article class="bento__cell reveal">
+          <span class="bento__icon"><i class="bi bi-robot"></i></span>
+          <h3>Applied GenAI</h3>
+          <p>RAG with chunking, embeddings, retrieval tuning, and grounded generation.</p>
+        </article>
+
+        <article class="bento__cell reveal">
+          <span class="bento__icon"><i class="bi bi-cloud-check"></i></span>
+          <h3>Cloud &amp; DevOps</h3>
+          <p>Containerized delivery with CI/CD, observability, and production-first workflows.</p>
+        </article>
+
+        <article class="bento__cell bento__cell--wide reveal">
+          <p class="bento__eyebrow">What I build end-to-end</p>
+          <ul class="bento__list">
+            <li>Scalable APIs for business-critical products</li>
+            <li>Role-based, secure multi-tenant backends</li>
+            <li>LLM features for summarization &amp; retrieval</li>
+            <li>Reliable data infra: PostgreSQL, MongoDB, Redis</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="section container">
+      <div class="section-head reveal">
+        <p class="marker">(03) — Architecture</p>
+        <h2 class="section-title">How I think in <em>systems</em>, not scripts.</h2>
+      </div>
+
+      <div class="arch reveal">
+        <div class="arch__scroll">
+          <svg class="arch__svg" viewBox="0 0 1200 480" role="img" aria-label="System architecture: the API layer serves synchronous datastore reads, a RAG branch, and publishes async events to Kafka consumed by Celery workers.">
+            <!-- solid connectors (request / data flow) -->
+            <g class="arch__wire" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M150,240 L220,240" />
+              <path d="M370,225 C430,150 450,72 500,72" />
+              <path d="M670,72 L730,72" />
+              <path d="M370,240 L1000,240" />
+              <path d="M370,255 C430,330 450,412 500,412" />
+              <path d="M660,412 L730,412" />
+              <path d="M890,405 C975,378 990,300 1005,268" />
+            </g>
+
+            <!-- dashed connectors (Redis: cache / result store, no packets) -->
+            <g class="arch__wire arch__wire--dash" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M295,372 L295,272" />
+              <path d="M365,398 C520,432 640,416 730,416" />
+            </g>
+
+            <!-- animated packets -->
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.3s" repeatCount="indefinite" path="M150,240 L220,240" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.5s" begin="0.2s" repeatCount="indefinite" path="M370,225 C430,150 450,72 500,72" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.2s" begin="0.6s" repeatCount="indefinite" path="M670,72 L730,72" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="2.4s" begin="0.3s" repeatCount="indefinite" path="M370,240 L1000,240" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.5s" begin="0.4s" repeatCount="indefinite" path="M370,255 C430,330 450,412 500,412" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.2s" begin="0.9s" repeatCount="indefinite" path="M660,412 L730,412" /></circle>
+            <circle r="4.5" fill="var(--accent)"><animateMotion dur="1.6s" begin="1.2s" repeatCount="indefinite" path="M890,405 C975,378 990,300 1005,268" /></circle>
+
+            <!-- nodes -->
+            <g class="arch__node">
+              <rect x="20" y="208" width="130" height="64" rx="14" />
+              <text x="85" y="236">Client</text>
+              <text class="arch__sub" x="85" y="256">Web · Mobile</text>
+            </g>
+            <g class="arch__node arch__node--accent">
+              <rect x="220" y="208" width="150" height="64" rx="14" />
+              <text x="295" y="236">API Layer</text>
+              <text class="arch__sub" x="295" y="256">FastAPI · DRF</text>
+            </g>
+            <g class="arch__node arch__node--ai">
+              <rect x="500" y="40" width="170" height="64" rx="14" />
+              <text x="585" y="68">GenAI · RAG</text>
+              <text class="arch__sub" x="585" y="88">LangChain</text>
+            </g>
+            <g class="arch__node">
+              <rect x="730" y="40" width="150" height="64" rx="14" />
+              <text x="805" y="68">Vector DB</text>
+              <text class="arch__sub" x="805" y="88">ChromaDB</text>
+            </g>
+            <g class="arch__node">
+              <rect x="1000" y="200" width="180" height="80" rx="14" />
+              <text x="1090" y="236">Datastores</text>
+              <text class="arch__sub" x="1090" y="256">PostgreSQL · MongoDB</text>
+            </g>
+            <g class="arch__node">
+              <rect x="500" y="380" width="160" height="64" rx="14" />
+              <text x="580" y="408">Event Bus</text>
+              <text class="arch__sub" x="580" y="428">Apache Kafka</text>
+            </g>
+            <g class="arch__node">
+              <rect x="730" y="380" width="160" height="64" rx="14" />
+              <text x="810" y="408">Workers</text>
+              <text class="arch__sub" x="810" y="428">Celery · async</text>
+            </g>
+            <g class="arch__node arch__node--redis">
+              <rect x="225" y="372" width="140" height="56" rx="14" />
+              <text x="295" y="396">Redis</text>
+              <text class="arch__sub" x="295" y="414">cache · result store</text>
+            </g>
+          </svg>
+        </div>
+
+        <p class="arch__hint" aria-hidden="true">
+          <i class="bi bi-arrow-left-right"></i> Swipe to explore the flow
+        </p>
+
+        <div class="arch__legend">
+          <span><i style="background:var(--accent)"></i> live request &amp; data flow</span>
+          <span><i class="arch__legend-dash"></i> cache / result store</span>
+          <span class="arch__note">Sync path to datastores &amp; RAG · async events via Kafka → Celery.</span>
         </div>
       </div>
     </section>
 
-    <section id="skills" class="section container">
+    <!-- STACK -->
+    <section id="stack" class="section container">
       <div class="section-head reveal">
-        <p class="section-head__eyebrow">Skills</p>
-        <h2>Resume-aligned technical stack</h2>
+        <p class="marker">(04) — Stack</p>
+        <h2 class="section-title">The toolkit behind the systems.</h2>
       </div>
 
-      <div class="skills-grid">
-        <article class="skill-group reveal">
-          <h3>Languages & Frameworks</h3>
-          <ul class="chip-list">
-            <li>Python</li>
-            <li>JavaScript</li>
-            <li>Golang</li>
-            <li>Django</li>
-            <li>Django REST Framework</li>
-            <li>FastAPI</li>
-            <li>GraphQL</li>
-            <li>Flask</li>
-            <li>LangChain</li>
+      <div class="stack-grid">
+        <article class="stack-col reveal">
+          <div class="stack-col__head">
+            <span class="stack-col__no">01</span>
+            <h3>Languages &amp; Frameworks</h3>
+          </div>
+          <ul class="tag-list">
+            <li>Python</li><li>JavaScript</li><li>Golang</li>
+            <li>Django</li><li>Django REST</li><li>FastAPI</li>
+            <li>GraphQL</li><li>Flask</li><li>LangChain</li>
           </ul>
         </article>
 
-        <article class="skill-group reveal">
-          <h3>Databases & Messaging</h3>
-          <ul class="chip-list">
-            <li>PostgreSQL</li>
-            <li>MySQL</li>
-            <li>MongoDB</li>
-            <li>ChromaDB</li>
-            <li>SQLite</li>
-            <li>Redis</li>
-            <li>Elasticsearch</li>
-            <li>Kafka</li>
-            <li>RabbitMQ</li>
-            <li>Celery</li>
-            <li>WebSockets</li>
+        <article class="stack-col reveal">
+          <div class="stack-col__head">
+            <span class="stack-col__no">02</span>
+            <h3>Databases &amp; Messaging</h3>
+          </div>
+          <ul class="tag-list">
+            <li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li>
+            <li>ChromaDB</li><li>SQLite</li><li>Redis</li>
+            <li>Elasticsearch</li><li>Kafka</li><li>RabbitMQ</li>
+            <li>Celery</li><li>WebSockets</li>
           </ul>
         </article>
 
-        <article class="skill-group reveal">
-          <h3>Cloud, DevOps & Tools</h3>
-          <ul class="chip-list">
-            <li>Docker</li>
-            <li>AWS (EC2, ECR, Lambda)</li>
-            <li>Azure</li>
-            <li>Jenkins</li>
-            <li>CI/CD Pipelines</li>
-            <li>GitLab / GitHub</li>
-            <li>Swagger / Postman</li>
-            <li>Pytest</li>
-            <li>OAuth2.0 / JWT</li>
+        <article class="stack-col reveal">
+          <div class="stack-col__head">
+            <span class="stack-col__no">03</span>
+            <h3>Cloud, DevOps &amp; Tools</h3>
+          </div>
+          <ul class="tag-list">
+            <li>Docker</li><li>AWS (EC2/ECR/Lambda)</li><li>Azure</li>
+            <li>Jenkins</li><li>CI/CD</li><li>GitLab / GitHub</li>
+            <li>Swagger / Postman</li><li>Pytest</li><li>OAuth2 / JWT</li>
           </ul>
         </article>
       </div>
     </section>
 
-    <section id="projects" class="section container">
+    <!-- WORK -->
+    <section id="work" class="section container">
       <div class="section-head reveal">
-        <p class="section-head__eyebrow">Projects</p>
-        <h2>Projects from my latest resume</h2>
+        <p class="marker">(05) — Selected work</p>
+        <h2 class="section-title">Systems I've shipped.</h2>
       </div>
 
-      <div class="project-grid">
-        <article class="project-card reveal">
-          <div class="project-card__head">
-            <h3>RAG Q&amp;A System</h3>
-            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-box-arrow-up-right"></i>
-            </a>
-          </div>
-          <p>
-            Built a production-grade RAG application with a decoupled FastAPI backend
-            and Streamlit frontend, supporting ingestion of PDF/DOCX/TXT/YouTube
-            transcripts with vector retrieval over ChromaDB.
-          </p>
-          <ul class="project-tags">
-            <li>FastAPI</li>
-            <li>LangChain</li>
-            <li>ChromaDB</li>
-            <li>Streamlit</li>
-            <li>Docker</li>
-          </ul>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-card__head">
-            <h3>Banking-as-a-Service Platform</h3>
-            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-box-arrow-up-right"></i>
-            </a>
-          </div>
-          <p>
-            Developed a multi-tenant BaaS application with secure JWT and role-based
-            access, integrating REST, GraphQL, and WebSockets for secure, real-time
-            financial workflows.
-          </p>
-          <ul class="project-tags">
-            <li>Django</li>
-            <li>Django DRF</li>
-            <li>GraphQL</li>
-            <li>WebSockets</li>
-            <li>Celery</li>
-          </ul>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-card__head">
-            <h3>Facial Recognition Attendance System</h3>
-            <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-box-arrow-up-right"></i>
-            </a>
-          </div>
-          <p>
-            Built a FastAPI-based attendance platform with real-time detection, secure
-            tracking, asynchronous processing, Alembic migrations, and Celery-powered
-            verification/report workflows.
-          </p>
-          <ul class="project-tags">
-            <li>FastAPI</li>
-            <li>SQLAlchemy</li>
-            <li>asyncpg</li>
-            <li>Alembic</li>
-            <li>Celery</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section id="experience" class="section container">
-      <div class="section-head reveal">
-        <p class="section-head__eyebrow">Experience</p>
-        <h2>Professional timeline</h2>
-      </div>
-
-      <div class="experience-list">
-        <article class="experience-item reveal">
-          <div class="experience-item__top">
-            <p>June 2025 - Present</p>
-            <h3>Kellton • Software Engineer (Gurugram)</h3>
-            <button class="exp-toggle" aria-expanded="false">View details</button>
-          </div>
-          <div class="exp-details">
-            <ul>
-              <li>Building high-performance FastAPI backend services for a large-scale dynamic survey platform.</li>
-              <li>Architected a hybrid data layer with PostgreSQL for metadata and MongoDB for schema-less responses.</li>
-              <li>Implemented event-driven workflows using Apache Kafka for real-time processing and analytics.</li>
-              <li>Integrated LangChain-powered GenAI features for summarization and intelligent insights.</li>
-              <li>Containerized and deployed services on Microsoft Azure using Docker-based workflows.</li>
+      <div class="work-list">
+        <article class="work-card reveal" data-tilt>
+          <div class="work-card__index">01</div>
+          <div class="work-card__body">
+            <div class="work-card__top">
+              <h3>RAG Q&amp;A System</h3>
+              <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" aria-label="Open on GitHub">
+                <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+            <p>
+              Production-grade RAG app with a decoupled FastAPI backend and Streamlit
+              frontend — ingesting PDF/DOCX/TXT/YouTube transcripts with vector retrieval
+              over ChromaDB.
+            </p>
+            <ul class="work-card__tags">
+              <li>FastAPI</li><li>LangChain</li><li>ChromaDB</li><li>Streamlit</li><li>Docker</li>
             </ul>
           </div>
         </article>
 
-        <article class="experience-item reveal">
-          <div class="experience-item__top">
-            <p>May 2024 - June 2025</p>
-            <h3>Spacepe • Backend Developer (New Delhi)</h3>
-            <button class="exp-toggle" aria-expanded="false">View details</button>
+        <article class="work-card reveal" data-tilt>
+          <div class="work-card__index">02</div>
+          <div class="work-card__body">
+            <div class="work-card__top">
+              <h3>Banking-as-a-Service Platform</h3>
+              <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" aria-label="Open on GitHub">
+                <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+            <p>
+              Multi-tenant BaaS with secure JWT &amp; role-based access — integrating REST,
+              GraphQL, and WebSockets for secure, real-time financial workflows.
+            </p>
+            <ul class="work-card__tags">
+              <li>Django</li><li>DRF</li><li>GraphQL</li><li>WebSockets</li><li>Celery</li>
+            </ul>
           </div>
-          <div class="exp-details">
+        </article>
+
+        <article class="work-card reveal" data-tilt>
+          <div class="work-card__index">03</div>
+          <div class="work-card__body">
+            <div class="work-card__top">
+              <h3>Facial Recognition Attendance</h3>
+              <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer" aria-label="Open on GitHub">
+                <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+            <p>
+              FastAPI attendance platform with real-time detection, secure tracking,
+              asynchronous processing, Alembic migrations, and Celery-powered
+              verification/report workflows.
+            </p>
+            <ul class="work-card__tags">
+              <li>FastAPI</li><li>SQLAlchemy</li><li>asyncpg</li><li>Alembic</li><li>Celery</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- JOURNEY -->
+    <section id="journey" class="section container">
+      <div class="section-head reveal">
+        <p class="marker">(06) — Journey</p>
+        <h2 class="section-title">Experience &amp; education.</h2>
+      </div>
+
+      <div class="timeline">
+        <article class="tl-item reveal">
+          <div class="tl-item__dot"></div>
+          <p class="tl-item__date">Jun 2025 — Present</p>
+          <div class="tl-item__card">
+            <div class="tl-item__head">
+              <h3>Software Engineer</h3>
+              <span class="tl-item__org">Kellton · Gurugram</span>
+            </div>
             <ul>
-              <li>Developed and maintained scalable DRF APIs in a multi-tenant architecture with tenant-level isolation.</li>
+              <li>Building high-performance FastAPI services for a large-scale dynamic survey platform.</li>
+              <li>Architected a hybrid data layer — PostgreSQL for metadata, MongoDB for schema-less responses.</li>
+              <li>Implemented event-driven workflows with Apache Kafka for real-time processing &amp; analytics.</li>
+              <li>Integrated LangChain-powered GenAI for summarization and intelligent insights.</li>
+              <li>Containerized and deployed on Microsoft Azure with Docker-based workflows.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="tl-item reveal">
+          <div class="tl-item__dot"></div>
+          <p class="tl-item__date">May 2024 — Jun 2025</p>
+          <div class="tl-item__card">
+            <div class="tl-item__head">
+              <h3>Backend Developer</h3>
+              <span class="tl-item__org">Spacepe · New Delhi</span>
+            </div>
+            <ul>
+              <li>Developed scalable DRF APIs in a multi-tenant architecture with tenant-level isolation.</li>
               <li>Implemented GraphQL APIs to improve data-fetching flexibility and frontend efficiency.</li>
-              <li>Integrated Celery for background tasks including notifications, data sync, and heavy computations.</li>
-              <li>Improved system reliability and database efficiency with PgBouncer connection pooling.</li>
-              <li>Collaborated with cross-functional teams on enterprise-grade backend architecture decisions.</li>
+              <li>Integrated Celery for background tasks — notifications, data sync, heavy computation.</li>
+              <li>Improved reliability &amp; DB efficiency with PgBouncer connection pooling.</li>
             </ul>
           </div>
         </article>
 
-        <article class="experience-item reveal">
-          <div class="experience-item__top">
-            <p>Dec 2023 - Apr 2024</p>
-            <h3>Oodles Technologies • Associate Consultant - Development (Gurugram)</h3>
-            <button class="exp-toggle" aria-expanded="false">View details</button>
-          </div>
-          <div class="exp-details">
+        <article class="tl-item reveal">
+          <div class="tl-item__dot"></div>
+          <p class="tl-item__date">Dec 2023 — Apr 2024</p>
+          <div class="tl-item__card">
+            <div class="tl-item__head">
+              <h3>Associate Consultant — Development</h3>
+              <span class="tl-item__org">Oodles Technologies · Gurugram</span>
+            </div>
             <ul>
               <li>Developed scalable CRM modules for real estate applications using Django DRF.</li>
-              <li>Automated CI/CD pipelines with Jenkins for faster and smoother deployment cycles.</li>
-              <li>Leveraged Pandas and NumPy for efficient processing and analysis of business data.</li>
-              <li>Managed version control and team collaboration workflows using GitLab.</li>
+              <li>Automated CI/CD pipelines with Jenkins for faster, smoother deployments.</li>
+              <li>Leveraged Pandas &amp; NumPy for efficient business-data processing.</li>
             </ul>
           </div>
         </article>
 
-        <article class="experience-item reveal">
-          <div class="experience-item__top">
-            <p>Jan 2022 - Nov 2023</p>
-            <h3>SEO Digital India • Full Stack Software Developer (Delhi NCR)</h3>
-            <button class="exp-toggle" aria-expanded="false">View details</button>
-          </div>
-          <div class="exp-details">
+        <article class="tl-item reveal">
+          <div class="tl-item__dot"></div>
+          <p class="tl-item__date">Jan 2022 — Nov 2023</p>
+          <div class="tl-item__card">
+            <div class="tl-item__head">
+              <h3>Full Stack Software Developer</h3>
+              <span class="tl-item__org">SEO Digital India · Delhi NCR</span>
+            </div>
             <ul>
-              <li>Developed freight forwarding software using Django DRF and frontend technologies for logistics operations.</li>
-              <li>Deployed and managed AWS infrastructure using EC2, S3, CloudFront, and RDS.</li>
-              <li>Used AWS CloudWatch for monitoring, observability, and system reliability.</li>
-              <li>Worked directly with clients to gather requirements and deliver tailored scalable solutions.</li>
+              <li>Built freight-forwarding software with Django DRF for logistics operations.</li>
+              <li>Deployed &amp; managed AWS infra — EC2, S3, CloudFront, RDS.</li>
+              <li>Used CloudWatch for monitoring, observability, and reliability.</li>
             </ul>
           </div>
         </article>
-      </div>
-    </section>
 
-    <section id="education" class="section container">
-      <div class="section-head reveal">
-        <p class="section-head__eyebrow">Education</p>
-        <h2>Academic background</h2>
-      </div>
-      <div class="experience-list">
-        <article class="experience-item reveal">
-          <div class="experience-item__top">
-            <p>Aug 2017 - Oct 2021</p>
-            <h3>Jawaharlal Nehru Technological University Hyderabad</h3>
-            <button class="exp-toggle" aria-expanded="false">View details</button>
-          </div>
-          <div class="exp-details">
+        <article class="tl-item tl-item--edu reveal">
+          <div class="tl-item__dot"></div>
+          <p class="tl-item__date">Aug 2017 — Oct 2021</p>
+          <div class="tl-item__card">
+            <div class="tl-item__head">
+              <h3>B.Tech, Computer Science Engineering</h3>
+              <span class="tl-item__org">JNTU Hyderabad</span>
+            </div>
             <ul>
-              <li>B.Tech in Computer Science Engineering.</li>
+              <li>Bachelor of Technology in Computer Science &amp; Engineering.</li>
             </ul>
           </div>
         </article>
       </div>
     </section>
 
-    <section id="freelance" class="section container">
-      <div class="freelance-panel reveal">
-        <p class="section-head__eyebrow">Freelance</p>
-        <h2>Open to freelance backend and AI integration work</h2>
-        <p>
-          I’m available for selected freelance projects involving backend architecture,
-          API development, event-driven systems, and production-ready GenAI features.
-        </p>
-        <ul class="freelance-points">
-          <li>FastAPI / Django backend design and development</li>
-          <li>Scalable API and database architecture for SaaS products</li>
-          <li>RAG pipelines and LLM feature integration in existing platforms</li>
-          <li>Performance optimization and production hardening</li>
-        </ul>
-        <a class="btn btn--primary" href="mailto:mohdsakib9398@gmail.com">
-          Let’s Discuss Your Project
-        </a>
-      </div>
-    </section>
-
+    <!-- CONTACT -->
     <section id="contact" class="section container">
-      <div class="contact-panel reveal">
-        <p class="section-head__eyebrow">Contact</p>
-        <h2>Let’s build scalable backend products</h2>
-        <p>
-          Open to software engineering, backend platform, and AI-integrated product roles.
+      <div class="contact reveal">
+        <p class="marker marker--center">(07) — Contact</p>
+        <h2 class="contact__title">
+          Let's build something<br /><em>that scales.</em>
+        </h2>
+        <p class="contact__sub">
+          Open to software engineering, backend platform, and AI-integrated product roles —
+          plus selected freelance projects.
         </p>
-        <p class="contact-panel__email">
-          <i class="bi bi-envelope"></i>
-          <a href="mailto:mohdsakib9398@gmail.com">mohdsakib9398@gmail.com</a>
-        </p>
-        <div class="contact-panel__actions">
-          <a class="btn btn--primary" href="mailto:mohdsakib9398@gmail.com">Email Me</a>
-          <a class="btn btn--ghost" href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a class="btn btn--ghost" href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="contact__email" href="mailto:mohdsakib9398@gmail.com" data-magnetic>
+          <span>mohdsakib9398@gmail.com</span>
+          <i class="bi bi-arrow-up-right"></i>
+        </a>
+
+        <div class="contact__chips">
+          <span>FastAPI / Django backend design</span>
+          <span>Scalable API &amp; DB architecture</span>
+          <span>RAG &amp; LLM feature integration</span>
+          <span>Performance &amp; production hardening</span>
+        </div>
+
+        <div class="contact__links">
+          <a href="https://github.com/MohdSakib535" target="_blank" rel="noopener noreferrer"><i class="bi bi-github"></i> GitHub</a>
+          <a href="https://www.linkedin.com/in/mohdsakibb/" target="_blank" rel="noopener noreferrer"><i class="bi bi-linkedin"></i> LinkedIn</a>
+          <a href="tel:+919398980477"><i class="bi bi-telephone"></i> +91 93989 80477</a>
         </div>
       </div>
     </section>
   </main>
 
-  <button id="backToTop" class="back-to-top" aria-label="Back to top">
-    <i class="bi bi-arrow-up"></i>
-  </button>
+  <!-- Mobile bottom dock -->
+  <nav class="mobile-dock" aria-label="Quick navigation">
+    <a href="#home" aria-label="Home"><i class="bi bi-house-door"></i></a>
+    <a href="#architecture" aria-label="Architecture"><i class="bi bi-diagram-3"></i></a>
+    <a href="#work" aria-label="Work"><i class="bi bi-folder2-open"></i></a>
+    <a href="#journey" aria-label="Journey"><i class="bi bi-clock-history"></i></a>
+    <a href="#contact" aria-label="Contact"><i class="bi bi-envelope"></i></a>
+  </nav>
+
+  <!-- Command palette -->
+  <div class="cmdk" id="cmdk" aria-hidden="true">
+    <div class="cmdk__backdrop" data-cmd-close></div>
+    <div class="cmdk__panel" role="dialog" aria-modal="true" aria-label="Command palette">
+      <div class="cmdk__search">
+        <i class="bi bi-search"></i>
+        <input id="cmdInput" type="text" placeholder="Jump to a section, copy email, switch accent…" autocomplete="off" spellcheck="false" />
+        <kbd>esc</kbd>
+      </div>
+      <ul class="cmdk__list" id="cmdList"></ul>
+      <div class="cmdk__foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>↵</kbd> select</span>
+        <span class="cmdk__brand">Mohd Sakib · portfolio</span>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
-    <p>&copy; <span id="year"></span> Mohd Sakib. All rights reserved.</p>
+    <div class="footer__big" aria-hidden="true">MOHD SAKIB</div>
+    <div class="container footer__row">
+      <p>&copy; <span id="year"></span> Mohd Sakib. Built from scratch.</p>
+      <button id="backToTop" class="footer__top">
+        Back to top <i class="bi bi-arrow-up"></i>
+      </button>
+    </div>
   </footer>
 
   <script src="index.js"></script>
