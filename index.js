@@ -1,8 +1,8 @@
 // ---------- Loader ----------
 const loader = document.querySelector(".loader");
-window.addEventListener("load", () => {
-  setTimeout(() => loader && loader.classList.add("loader--hidden"), 900);
-});
+const hideLoader = () => loader && loader.classList.add("loader--hidden");
+if (document.readyState !== "loading") hideLoader();
+else document.addEventListener("DOMContentLoaded", hideLoader, { once: true });
 
 const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -14,20 +14,35 @@ if (spotlight && !prefersReduced && window.matchMedia("(pointer: fine)").matches
   let cx = tx;
   let cy = ty;
 
-  window.addEventListener("mousemove", (e) => {
-    tx = e.clientX;
-    ty = e.clientY;
-    spotlight.style.opacity = "1";
-  });
+  let running = false;
 
   const animate = () => {
     cx += (tx - cx) * 0.12;
     cy += (ty - cy) * 0.12;
-    spotlight.style.left = `${cx}px`;
-    spotlight.style.top = `${cy}px`;
+    spotlight.style.transform =
+      `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0) translate(-50%, -50%)`;
+    // park the loop once the easing has visually settled
+    if (Math.abs(tx - cx) < 0.4 && Math.abs(ty - cy) < 0.4) {
+      running = false;
+      return;
+    }
     requestAnimationFrame(animate);
   };
-  requestAnimationFrame(animate);
+
+  const kick = () => {
+    if (running || document.hidden) return;
+    running = true;
+    requestAnimationFrame(animate);
+  };
+
+  window.addEventListener("mousemove", (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+    spotlight.style.opacity = "1";
+    kick();
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => !document.hidden && kick());
 }
 
 // ---------- Navigation ----------
@@ -95,37 +110,102 @@ revealEls.forEach((el, i) => {
   revealObserver.observe(el);
 });
 
+// ---------- Pause off-screen animation ----------
+// The architecture SVG runs 7 SMIL packet animations and the hero marquee runs a
+// 34s transform loop; neither is worth a frame of work while scrolled out of view.
+const archSvg = document.querySelector(".arch__svg");
+const marqueeTrack = document.querySelector(".marquee__track");
+const heroAura = document.querySelector(".hero__aura");
+
+const idleObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      const el = entry.target;
+      if (el === archSvg && typeof archSvg.pauseAnimations === "function") {
+        entry.isIntersecting ? archSvg.unpauseAnimations() : archSvg.pauseAnimations();
+      } else {
+        el.classList.toggle("is-paused", !entry.isIntersecting);
+      }
+    });
+  },
+  { rootMargin: "120px 0px" }
+);
+
+if (archSvg && !prefersReduced) {
+  archSvg.pauseAnimations?.();
+  idleObserver.observe(archSvg);
+}
+if (marqueeTrack && !prefersReduced) idleObserver.observe(marqueeTrack);
+if (heroAura && !prefersReduced) idleObserver.observe(heroAura);
+
+// also stop everything while the tab is in the background
+document.addEventListener("visibilitychange", () => {
+  if (!archSvg || typeof archSvg.pauseAnimations !== "function" || prefersReduced) return;
+  if (document.hidden) archSvg.pauseAnimations();
+});
+
 // ---------- Active section link ----------
 const sections = document.querySelectorAll("main section[id]");
 const navMap = new Map();
+const dockMap = new Map();
 navAnchors.forEach((a) => {
   const id = a.getAttribute("href")?.slice(1);
   if (id) navMap.set(id, a);
 });
 
-const setActiveLink = () => {
-  let active = "home";
-  const offset = window.scrollY + 160;
-  sections.forEach((s) => {
-    if (offset >= s.offsetTop) active = s.id;
-  });
-  navMap.forEach((a, id) => a.classList.toggle("is-active", id === active));
+// Reading offsetTop per section on every scroll event forces a layout each frame.
+// Measure once, then only re-measure when the layout can actually have changed.
+let sectionTops = [];
+let scrollMax = 0;
+const measure = () => {
+  sectionTops = Array.from(sections, (s) => ({ id: s.id, top: s.offsetTop }));
+  scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+};
+
+let activeId = "";
+const applyActive = (id) => {
+  if (id === activeId) return;
+  activeId = id;
+  navMap.forEach((a, key) => a.classList.toggle("is-active", key === id));
+  dockMap.forEach((a, key) => a.classList.toggle("is-active", key === id));
 };
 
 // ---------- Header + progress ----------
 const onScroll = () => {
-  siteHeader?.classList.toggle("is-scrolled", window.scrollY > 12);
+  const y = window.scrollY;
+  siteHeader?.classList.toggle("is-scrolled", y > 12);
   if (scrollProgress) {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    scrollProgress.style.transform = `scaleX(${scrollMax > 0 ? y / scrollMax : 0})`;
   }
-  setActiveLink();
+  const offset = y + 160;
+  let active = "home";
+  for (const s of sectionTops) if (offset >= s.top) active = s.id;
+  applyActive(active);
 };
 
-window.addEventListener("scroll", onScroll, { passive: true });
-window.addEventListener("resize", onScroll);
-window.addEventListener("load", onScroll);
-onScroll();
+let scrollTicking = false;
+const onScrollRaf = () => {
+  if (scrollTicking) return;
+  scrollTicking = true;
+  requestAnimationFrame(() => {
+    scrollTicking = false;
+    onScroll();
+  });
+};
+
+const remeasure = () => {
+  measure();
+  onScroll();
+};
+
+window.addEventListener("scroll", onScrollRaf, { passive: true });
+window.addEventListener("resize", remeasure);
+window.addEventListener("load", remeasure);
+if (typeof ResizeObserver !== "undefined") {
+  // sections grow/shrink as fonts load and reveals fire — keep offsets honest
+  new ResizeObserver(remeasure).observe(document.body);
+}
+remeasure();
 
 const finePointer = window.matchMedia("(pointer: fine)").matches;
 
@@ -182,32 +262,23 @@ if (!prefersReduced && finePointer) {
     let tx = startX, ty = startY;
     let hover = 0;
 
-    window.addEventListener("mousemove", (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      gooGroup.style.opacity = gooDot.style.opacity = "1";
-    });
-
-    const setHover = (v) => (e) => {
-      const t = e.target;
-      if (t instanceof Element && t.closest("a, button, [data-magnetic], .swatch, .work-card, input")) {
-        hover = v;
-      }
-    };
-    document.addEventListener("mouseover", setHover(1));
-    document.addEventListener("mouseout", setHover(0));
-
     let hoverEase = 0;
+    let gooRunning = false;
+
+    // The gooey feGaussianBlur is re-rendered on every frame this loop runs, so it
+    // is only worth running while something is actually still in motion.
     const loop = () => {
       hoverEase += (hover - hoverEase) * 0.12;
-      // lead blob chases the pointer; the rest chase the one ahead -> liquid stretch
       let px = tx, py = ty;
+      let moving = Math.abs(hover - hoverEase) > 0.002;
+      // lead blob chases the pointer; the rest chase the one ahead -> liquid stretch
       blobs.forEach((b, i) => {
         const ease = 0.34 - i * 0.035;
         b.x += (px - b.x) * ease;
         b.y += (py - b.y) * ease;
         const targetR = b.r * (1 + hoverEase * 0.6);
         b.cur += (targetR - b.cur) * 0.2;
+        if (Math.abs(px - b.x) > 0.2 || Math.abs(py - b.y) > 0.2) moving = true;
         b.el.setAttribute("cx", b.x.toFixed(1));
         b.el.setAttribute("cy", b.y.toFixed(1));
         b.el.setAttribute("r", b.cur.toFixed(1));
@@ -216,9 +287,36 @@ if (!prefersReduced && finePointer) {
       });
       gooDot.setAttribute("cx", blobs[0].x.toFixed(1));
       gooDot.setAttribute("cy", blobs[0].y.toFixed(1));
+      if (!moving) {
+        gooRunning = false;
+        return;
+      }
       requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+
+    const kickGoo = () => {
+      if (gooRunning || document.hidden) return;
+      gooRunning = true;
+      requestAnimationFrame(loop);
+    };
+
+    window.addEventListener("mousemove", (e) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      gooGroup.style.opacity = gooDot.style.opacity = "1";
+      kickGoo();
+    }, { passive: true });
+
+    const setHover = (v) => (e) => {
+      const t = e.target;
+      if (t instanceof Element && t.closest("a, button, [data-magnetic], .swatch, .work-card, input")) {
+        hover = v;
+        kickGoo();
+      }
+    };
+    document.addEventListener("mouseover", setHover(1));
+    document.addEventListener("mouseout", setHover(0));
+    document.addEventListener("visibilitychange", () => !document.hidden && kickGoo());
   }
 }
 
@@ -292,18 +390,20 @@ if (!prefersReduced) {
 
 // ---------- Local clock (IST) ----------
 const clock = document.getElementById("localClock");
-const updateClock = () => {
-  if (!clock) return;
-  const now = new Date();
-  const ist = new Date(
-    now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-  );
-  const hh = String(ist.getHours()).padStart(2, "0");
-  const mm = String(ist.getMinutes()).padStart(2, "0");
-  clock.textContent = `${hh}:${mm}`;
-};
-updateClock();
-setInterval(updateClock, 30000);
+if (clock) {
+  const istTime = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const updateClock = () => {
+    clock.textContent = istTime.format(new Date());
+    // re-arm exactly on the next minute boundary instead of polling twice a minute
+    setTimeout(updateClock, 60000 - (Date.now() % 60000) + 250);
+  };
+  updateClock();
+}
 
 // ---------- Back to top + year ----------
 document.getElementById("backToTop")?.addEventListener("click", () => {
@@ -315,7 +415,6 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 // ---------- Mobile bottom dock ----------
 const dockLinks = document.querySelectorAll(".mobile-dock a");
-const dockMap = new Map();
 dockLinks.forEach((a) => {
   const id = a.getAttribute("href")?.slice(1);
   if (id) dockMap.set(id, a);
@@ -329,17 +428,8 @@ dockLinks.forEach((a) => {
   });
 });
 
-const setDockActive = () => {
-  if (!dockMap.size) return;
-  let active = "home";
-  const offset = window.scrollY + 160;
-  sections.forEach((s) => {
-    if (offset >= s.offsetTop) active = s.id;
-  });
-  dockMap.forEach((a, id) => a.classList.toggle("is-active", id === active));
-};
-window.addEventListener("scroll", setDockActive, { passive: true });
-setDockActive();
+// the dock shares the single scroll pass above; just paint its initial state
+dockMap.forEach((a, id) => a.classList.toggle("is-active", id === activeId));
 
 // ---------- Command palette (⌘K) ----------
 const cmdk = document.getElementById("cmdk");
@@ -364,25 +454,25 @@ if (cmdk && cmdInput && cmdList) {
   };
 
   const commands = [
-    { group: "Navigate", icon: "bi-house", label: "Home", hint: "01", run: go("#home") },
-    { group: "Navigate", icon: "bi-person", label: "About", hint: "02", run: go("#about") },
-    { group: "Navigate", icon: "bi-diagram-3", label: "Architecture", hint: "03", run: go("#architecture") },
-    { group: "Navigate", icon: "bi-stack", label: "Stack", hint: "04", run: go("#stack") },
-    { group: "Navigate", icon: "bi-folder", label: "Selected work", hint: "05", run: go("#work") },
-    { group: "Navigate", icon: "bi-clock-history", label: "Journey", hint: "06", run: go("#journey") },
-    { group: "Navigate", icon: "bi-envelope", label: "Contact", hint: "07", run: go("#contact") },
-    { group: "Actions", icon: "bi-clipboard", label: "Copy email address", hint: "mail", run: () => {
+    { group: "Navigate", icon: "house", label: "Home", hint: "01", run: go("#home") },
+    { group: "Navigate", icon: "person", label: "About", hint: "02", run: go("#about") },
+    { group: "Navigate", icon: "diagram-3", label: "Architecture", hint: "03", run: go("#architecture") },
+    { group: "Navigate", icon: "stack", label: "Stack", hint: "04", run: go("#stack") },
+    { group: "Navigate", icon: "folder", label: "Selected work", hint: "05", run: go("#work") },
+    { group: "Navigate", icon: "clock-history", label: "Journey", hint: "06", run: go("#journey") },
+    { group: "Navigate", icon: "envelope", label: "Contact", hint: "07", run: go("#contact") },
+    { group: "Actions", icon: "clipboard", label: "Copy email address", hint: "mail", run: () => {
         navigator.clipboard?.writeText("mohdsakib9398@gmail.com");
         toast("Email copied ✓");
       } },
-    { group: "Actions", icon: "bi-download", label: "Download résumé", hint: "pdf", run: () => {
+    { group: "Actions", icon: "download", label: "Download résumé", hint: "pdf", run: () => {
         const a = document.createElement("a");
         a.href = "MohdSakib_Resume.pdf";
         a.download = "";
         a.click();
       } },
-    { group: "Actions", icon: "bi-github", label: "Open GitHub", run: () => window.open("https://github.com/MohdSakib535", "_blank") },
-    { group: "Actions", icon: "bi-linkedin", label: "Open LinkedIn", run: () => window.open("https://www.linkedin.com/in/mohdsakibb/", "_blank") },
+    { group: "Actions", icon: "github", label: "Open GitHub", run: () => window.open("https://github.com/MohdSakib535", "_blank") },
+    { group: "Actions", icon: "linkedin", label: "Open LinkedIn", run: () => window.open("https://www.linkedin.com/in/mohdsakibb/", "_blank") },
     { group: "Accent", sw: "#cdfb45", label: "Lime", run: () => { applyAccent("#cdfb45"); localStorage.setItem("accent", "#cdfb45"); } },
     { group: "Accent", sw: "#ff9f5a", label: "Amber", run: () => { applyAccent("#ff9f5a"); localStorage.setItem("accent", "#ff9f5a"); } },
     { group: "Accent", sw: "#4fd7ff", label: "Cyan", run: () => { applyAccent("#4fd7ff"); localStorage.setItem("accent", "#4fd7ff"); } },
@@ -395,6 +485,7 @@ if (cmdk && cmdInput && cmdList) {
   const render = () => {
     cmdList.innerHTML = "";
     if (!filtered.length) {
+      itemEls = [];
       cmdList.innerHTML = '<li class="cmdk__empty">No matches — try “work” or “accent”.</li>';
       return;
     }
@@ -411,21 +502,22 @@ if (cmdk && cmdInput && cmdList) {
       li.className = "cmdk__item" + (i === cursor ? " is-active" : "");
       const visual = cmd.sw
         ? `<span class="cmdk__sw" style="background:${cmd.sw}"></span>`
-        : `<i class="bi ${cmd.icon}"></i>`;
+        : `<svg class="ico" aria-hidden="true"><use href="#i-${cmd.icon}"/></svg>`;
       li.innerHTML = `${visual}<span>${cmd.label}</span>${cmd.hint ? `<span class="cmdk__hint">${cmd.hint}</span>` : ""}`;
       li.addEventListener("click", () => execute(i));
       li.addEventListener("mousemove", () => {
+        if (cursor === i) return;
         cursor = i;
         updateActive();
       });
       cmdList.appendChild(li);
     });
+    itemEls = Array.from(cmdList.querySelectorAll(".cmdk__item"));
   };
 
+  let itemEls = [];
   const updateActive = () => {
-    cmdList.querySelectorAll(".cmdk__item").forEach((el, i) => {
-      el.classList.toggle("is-active", i === cursor);
-    });
+    itemEls.forEach((el, i) => el.classList.toggle("is-active", i === cursor));
   };
 
   const execute = (i) => {
@@ -464,12 +556,12 @@ if (cmdk && cmdInput && cmdList) {
       e.preventDefault();
       cursor = Math.min(cursor + 1, filtered.length - 1);
       updateActive();
-      cmdList.querySelectorAll(".cmdk__item")[cursor]?.scrollIntoView({ block: "nearest" });
+      itemEls[cursor]?.scrollIntoView({ block: "nearest" });
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       cursor = Math.max(cursor - 1, 0);
       updateActive();
-      cmdList.querySelectorAll(".cmdk__item")[cursor]?.scrollIntoView({ block: "nearest" });
+      itemEls[cursor]?.scrollIntoView({ block: "nearest" });
     } else if (e.key === "Enter") {
       e.preventDefault();
       execute(cursor);

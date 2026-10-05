@@ -1,3 +1,35 @@
+/* Self-hosted variable fonts, subsetted to the glyphs this site renders.
+   Replaces 11 static files (336 KB) + 2 cross-origin handshakes with 4 local
+   files (92 KB) on the same connection as the page. */
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("fonts/SpaceGrotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("fonts/InstrumentSerif.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --bg: #0a0a0b;
   --bg-2: #101012;
@@ -51,11 +83,11 @@ body::before {
 
 .grain {
   position: fixed;
-  inset: -50%;
+  inset: 0;
   z-index: -2;
   pointer-events: none;
   opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .spotlight {
@@ -71,12 +103,22 @@ body::before {
   z-index: -1;
   opacity: 0;
   transition: opacity 0.6s ease;
-  will-change: left, top;
+  will-change: transform;
+  contain: strict;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Inline sprite icons: sized by font-size like the icon font they replaced. */
+.ico {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
 }
 
 ul {
@@ -164,7 +206,7 @@ ul {
   top: 0;
   z-index: 100;
   border-bottom: 1px solid transparent;
-  transition: background var(--t), border-color var(--t), backdrop-filter var(--t);
+  transition: background var(--t), border-color var(--t);
 }
 
 .site-header.is-scrolled {
@@ -280,7 +322,8 @@ ul {
   border-color: var(--accent);
 }
 
-.nav__resume i {
+.nav__resume i,
+.nav__resume .ico {
   font-size: 1.1rem;
 }
 
@@ -438,7 +481,8 @@ ul {
   transition: background var(--t), color var(--t), border-color var(--t), transform 0.2s ease;
 }
 
-.btn i {
+.btn i,
+.btn .ico {
   transition: transform var(--t);
 }
 
@@ -447,7 +491,8 @@ ul {
   color: #0a0a0b;
 }
 
-.btn--primary:hover i {
+.btn--primary:hover i,
+.btn--primary:hover .ico {
   transform: translateX(4px);
 }
 
@@ -596,6 +641,10 @@ ul {
   gap: 1.6rem;
   width: max-content;
   animation: marquee 34s linear infinite;
+}
+
+.marquee__track.is-paused {
+  animation-play-state: paused;
 }
 
 .marquee__track span {
@@ -1092,11 +1141,13 @@ ul {
   transition: transform 0.2s ease;
 }
 
-.contact__email i {
+.contact__email i,
+.contact__email .ico {
   transition: transform var(--t);
 }
 
-.contact__email:hover i {
+.contact__email:hover i,
+.contact__email:hover .ico {
   transform: translate(3px, -3px);
 }
 
@@ -1279,6 +1330,10 @@ body.cursor-ready input {
   animation: aura 14s ease-in-out infinite alternate;
 }
 
+.hero__aura.is-paused {
+  animation-play-state: paused;
+}
+
 @keyframes aura {
   from { transform: translate3d(-3%, -2%, 0) scale(1); }
   to { transform: translate3d(4%, 3%, 0) scale(1.12); }
@@ -1388,7 +1443,8 @@ body.cursor-ready input {
   color: var(--text);
 }
 
-.nav__cmd i {
+.nav__cmd i,
+.nav__cmd .ico {
   font-size: 0.85rem;
 }
 
@@ -1561,7 +1617,8 @@ body.cursor-ready input {
   border-bottom: 1px solid var(--line);
 }
 
-.cmdk__search i {
+.cmdk__search i,
+.cmdk__search .ico {
   color: var(--muted);
   font-size: 1.05rem;
 }
@@ -1616,7 +1673,8 @@ kbd {
   font-size: 0.92rem;
 }
 
-.cmdk__item i {
+.cmdk__item i,
+.cmdk__item .ico {
   font-size: 1.05rem;
   width: 20px;
   text-align: center;
@@ -1635,7 +1693,8 @@ kbd {
   color: var(--text);
 }
 
-.cmdk__item.is-active i {
+.cmdk__item.is-active i,
+.cmdk__item.is-active .ico {
   color: var(--accent);
 }
 
@@ -1720,7 +1779,8 @@ kbd {
     animation: swipe-nudge 2.2s ease-in-out infinite;
   }
 
-  .arch__hint i {
+  .arch__hint i,
+  .arch__hint .ico {
     color: var(--accent);
     font-size: 0.9rem;
   }
@@ -1871,7 +1931,8 @@ kbd {
     padding: 0.5rem 1rem;
   }
 
-  .nav__drawer-resume i {
+  .nav__drawer-resume i,
+  .nav__drawer-resume .ico {
     font-size: 1.1rem;
   }
 
@@ -2040,6 +2101,26 @@ kbd {
   }
 }
 
+/* Phones pay for a live backdrop blur on every scrolled frame — and here there are
+   two fixed bars doing it at once. An opaque bar looks near-identical on this dark
+   theme and costs nothing. */
+@media (max-width: 820px), (pointer: coarse) {
+  .site-header.is-scrolled {
+    background: rgba(10, 10, 11, 0.94);
+    backdrop-filter: none;
+  }
+
+  .mobile-dock {
+    background: rgba(18, 18, 20, 0.96);
+    backdrop-filter: none;
+  }
+
+  .theme-dock {
+    background: rgba(20, 20, 22, 0.96);
+    backdrop-filter: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2054,5 +2135,16 @@ kbd {
   .hero__title .line {
     opacity: 1;
     transform: none;
+  }
+
+  .marquee__track,
+  .hero__aura,
+  .loader__fill {
+    animation: none !important;
+  }
+
+  .grain,
+  .spotlight {
+    display: none;
   }
 }
