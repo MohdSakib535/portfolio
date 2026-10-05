@@ -1408,6 +1408,11 @@ main {
 }
 
 /* ---------- Architecture ---------- */
+.section-aside b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .arch {
   padding: clamp(1rem, 2vw, 1.6rem);
 }
@@ -1425,41 +1430,108 @@ main {
 .arch__svg {
   display: block;
   width: 100%;
-  min-width: 940px;
+  min-width: 980px;
   height: auto;
-  color: var(--line-strong);
 }
 
 .arch__dotgrid {
-  fill: rgba(255, 255, 255, 0.07);
+  fill: rgba(255, 255, 255, 0.06);
 }
 
-.arch__wire path {
-  stroke-dasharray: 4 6;
-  opacity: 0.6;
-  transition: opacity 0.35s ease, stroke 0.35s ease;
+.arch__lane {
+  fill: rgba(255, 255, 255, 0.015);
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-dasharray: 3 6;
 }
 
-.arch__wire--dash path {
-  stroke: var(--muted-2);
-  stroke-dasharray: 2 5;
-  opacity: 0.7;
+.arch__lane-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--muted-2);
 }
 
-.arch__wire path.is-lit {
+/* connections — the line style matches the legend */
+.arch__wires path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1.6;
+  marker-end: url(#archArrow);
+  transition: stroke 0.3s ease, opacity 0.3s ease, stroke-width 0.3s ease;
+}
+
+.arch__wires .w-async {
+  stroke-dasharray: 7 6;
+}
+
+.arch__wires .w-cache {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 5;
+}
+
+.arch__wires path.is-lit {
   stroke: var(--accent);
-  opacity: 1;
+  stroke-width: 2.2;
+  stroke-dasharray: 7 6;
+  marker-end: url(#archArrowLit);
   animation: wire-flow 0.9s linear infinite;
 }
 
-.arch.has-focus .arch__wire path:not(.is-lit) {
+.arch__wires path.w-cache.is-lit {
+  stroke-dasharray: 1 5;
+}
+
+#archArrow path {
+  fill: rgba(255, 255, 255, 0.45);
+}
+
+#archArrowLit path {
+  fill: var(--accent);
+}
+
+.arch.has-focus .arch__wires path:not(.is-lit) {
   opacity: 0.12;
+}
+
+.arch__labels text {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  fill: var(--muted);
+  text-anchor: middle;
+  transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
+.arch__labels .start {
+  text-anchor: start;
+}
+
+.arch__labels .end {
+  text-anchor: end;
+}
+
+.arch.has-focus .arch__labels text {
+  opacity: 0.2;
+}
+
+.arch.has-focus .arch__labels text.is-lit {
+  opacity: 1;
+  fill: var(--accent);
 }
 
 .arch__packets circle {
   fill: var(--accent);
+  transition: opacity 0.3s ease;
 }
 
+.arch.has-focus .arch__packets circle:not(.is-lit) {
+  opacity: 0.1;
+}
+
+/* components */
 .arch__node {
   cursor: pointer;
   outline: none;
@@ -1489,24 +1561,17 @@ main {
   font-weight: 400;
 }
 
+.arch__node:hover rect {
+  stroke: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
 .arch__node--accent rect {
   stroke: var(--accent);
   fill: color-mix(in srgb, var(--accent) 8%, var(--bg-2));
 }
 
-.arch__node--ai rect {
-  stroke-dasharray: 5 4;
-  stroke: var(--accent);
-}
-
-.arch__node--redis rect {
-  stroke: var(--muted-2);
-  stroke-dasharray: 3 4;
-  fill: rgba(255, 255, 255, 0.02);
-}
-
 .arch.has-focus .arch__node {
-  opacity: 0.3;
+  opacity: 0.28;
 }
 
 .arch.has-focus .arch__node.is-near {
@@ -1520,20 +1585,32 @@ main {
   fill: color-mix(in srgb, var(--accent) 16%, var(--bg-2));
 }
 
-.arch__info {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
+/* explanation panel + walkthrough controls */
+.arch__panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.9rem 1.4rem;
   margin-top: 1rem;
-  padding: 1rem 1.1rem;
+  padding: 1.1rem 1.2rem 0.9rem;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.02);
-  min-height: 74px;
+}
+
+.arch__info {
+  min-height: 104px;
+}
+
+.arch__info-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.8rem;
+  margin-bottom: 0.55rem;
 }
 
 .arch__tag {
-  flex: none;
   font-family: var(--mono);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
@@ -1544,9 +1621,29 @@ main {
   border-radius: 999px;
 }
 
-.arch__info p {
+.arch__step {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted-2);
+}
+
+.arch__text {
+  max-width: 72ch;
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.arch__meta {
+  margin-top: 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
   color: var(--muted);
-  font-size: 0.94rem;
+}
+
+.arch__meta:empty {
+  display: none;
 }
 
 .arch__info.is-swap > * {
@@ -1557,11 +1654,90 @@ main {
   from { opacity: 0; transform: translateY(6px); }
 }
 
+.arch__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.arch__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  height: 42px;
+  min-width: 42px;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+}
+
+.arch__btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.arch__btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.arch__btn--play,
+.arch__btn--play:hover:not(:disabled) {
+  min-width: 168px;
+  padding: 0 1.1rem;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.arch__btn--play[aria-pressed="true"] {
+  background: transparent;
+  color: var(--accent);
+}
+
+.arch__dots {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+}
+
+.arch__dot {
+  flex: 1;
+  height: 20px;
+  padding: 8px 0;
+  border: 0;
+  background: var(--line-strong);
+  background-clip: content-box;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.arch__dot.is-done {
+  background-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.arch__dot.is-active {
+  background-color: var(--accent);
+}
+
+html:not(.js) .arch__controls,
+html:not(.js) .arch__dots {
+  display: none;
+}
+
 .arch__legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1.3rem;
+  gap: 0.7rem 1.5rem;
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid var(--line);
@@ -1569,27 +1745,29 @@ main {
   color: var(--muted);
 }
 
-.arch__legend i {
+.arch__key {
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 0.4rem;
-  vertical-align: middle;
-}
-
-.arch__legend .arch__legend-dash {
-  width: 16px;
+  width: 26px;
   height: 0;
-  border-radius: 0;
-  border-top: 2px dashed var(--muted-2);
+  margin-right: 0.45rem;
+  vertical-align: middle;
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-.arch__note {
-  margin-left: auto;
-  font-family: var(--mono);
-  font-size: 0.74rem;
-  color: var(--muted-2);
+.arch__key--async {
+  border-top-style: dashed;
+}
+
+.arch__key--cache {
+  border-top: 3px dotted rgba(255, 255, 255, 0.5);
+}
+
+.arch__key--dot {
+  width: 9px;
+  height: 9px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
 /* ---------- Stack ---------- */
@@ -3151,9 +3329,10 @@ kbd {
     50% { transform: translateX(6px); }
   }
 
-  .arch__info { flex-direction: column; gap: 0.6rem; }
-  .arch__legend { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
-  .arch__note { margin-left: 0; }
+  .arch__panel { grid-template-columns: 1fr; }
+  .arch__controls { width: 100%; }
+  .arch__btn--play { flex: 1; min-width: 0; }
+  .arch__legend { gap: 0.6rem 1.2rem; }
 
   /* work becomes a native swipe carousel */
   .work__pin { height: auto !important; }

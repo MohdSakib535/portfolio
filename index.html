@@ -352,87 +352,122 @@
             <p class="marker">(03) — Architecture</p>
             <h2 class="section-title" data-split>How I think in <em>systems</em>, not scripts.</h2>
           </div>
-          <p class="section-aside reveal">Hover or tap any node to trace how it fits into the request path.</p>
+          <p class="section-aside reveal">The reference architecture behind most of what I build. Hover any component, or press <b>Trace a request</b> for a step-by-step walkthrough.</p>
         </div>
 
         <div class="arch glow-card reveal" id="arch">
           <div class="arch__scroll">
-            <svg class="arch__svg" viewBox="0 0 1200 480" role="img" aria-label="System architecture: the API layer serves synchronous datastore reads, a RAG branch, and publishes async events to Kafka consumed by Celery workers.">
+            <svg class="arch__svg" viewBox="0 0 1200 600" role="img" aria-labelledby="archTitle archDesc">
+              <title id="archTitle">Reference backend architecture</title>
+              <desc id="archDesc">Clients call a FastAPI / DRF API layer over HTTPS. The API serves hot reads from Redis, reads and writes PostgreSQL and MongoDB, sends questions to a LangChain RAG pipeline that retrieves from ChromaDB, publishes events to Kafka for real-time stream consumers, and enqueues background jobs that Celery workers pick up from the Redis broker. Consumers and workers write their results back to the datastores.</desc>
               <defs>
-                <pattern id="archDots" width="24" height="24" patternUnits="userSpaceOnUse">
+                <pattern id="archGrid" width="24" height="24" patternUnits="userSpaceOnUse">
                   <circle cx="1" cy="1" r="1" class="arch__dotgrid" />
                 </pattern>
+                <marker id="archArrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto">
+                  <path d="M0,1 L9,5 L0,9 Z" />
+                </marker>
+                <marker id="archArrowLit" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
+                  <path d="M0,1 L9,5 L0,9 Z" />
+                </marker>
               </defs>
-              <rect width="1200" height="480" fill="url(#archDots)" opacity="0.6" />
+              <rect width="1200" height="600" fill="url(#archGrid)" opacity="0.5" />
 
-              <!-- solid connectors (request / data flow) -->
-              <g class="arch__wire" fill="none" stroke="currentColor" stroke-width="2">
-                <path data-link="client api" d="M150,240 L220,240" />
-                <path data-link="api ai" d="M370,225 C430,150 450,72 500,72" />
-                <path data-link="ai vector" d="M670,72 L730,72" />
-                <path data-link="api data" d="M370,240 L1000,240" />
-                <path data-link="api kafka" d="M370,255 C430,330 450,412 500,412" />
-                <path data-link="kafka workers" d="M660,412 L730,412" />
-                <path data-link="workers data" d="M890,405 C975,378 990,300 1005,268" />
+              <!-- swimlanes -->
+              <g class="arch__lanes" aria-hidden="true">
+                <rect class="arch__lane" x="8" y="14" width="1184" height="112" rx="16" />
+                <text class="arch__lane-label" x="28" y="40">GenAI · retrieval</text>
+                <rect class="arch__lane" x="8" y="190" width="1184" height="160" rx="16" />
+                <text class="arch__lane-label" x="28" y="216">Sync · request path</text>
+                <rect class="arch__lane" x="8" y="366" width="1184" height="222" rx="16" />
+                <text class="arch__lane-label" x="28" y="392">Async · events &amp; tasks</text>
               </g>
 
-              <!-- dashed connectors (Redis: cache / result store, no packets) -->
-              <g class="arch__wire arch__wire--dash" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path data-link="api redis" d="M295,372 L295,272" />
-                <path data-link="redis workers" d="M365,398 C520,432 640,416 730,416" />
+              <!-- connections: solid = synchronous, dashed = async, dotted = cache / broker -->
+              <g class="arch__wires" aria-hidden="true">
+                <path data-wire="client-api" d="M160,272 L248,272" />
+                <path data-wire="api-data" d="M420,272 L998,272" />
+                <path data-wire="api-rag" d="M420,256 C470,256 468,74 518,74" />
+                <path data-wire="rag-vector" d="M710,74 L798,74" />
+                <path data-wire="api-redis" class="w-cache" d="M335,304 L335,506" />
+                <path data-wire="api-kafka" class="w-async" d="M400,304 C450,320 468,428 518,428" />
+                <path data-wire="kafka-consumers" class="w-async" d="M710,428 L798,428" />
+                <path data-wire="consumers-data" class="w-async" d="M990,428 C1040,428 1060,380 1060,314" />
+                <path data-wire="redis-celery" class="w-async" d="M420,540 L518,540" />
+                <path data-wire="celery-data" class="w-async" d="M710,540 C980,540 1150,520 1150,314" />
               </g>
 
-              <!-- animated packets -->
-              <g class="arch__packets">
-                <circle r="4.5"><animateMotion dur="1.3s" repeatCount="indefinite" path="M150,240 L220,240" /></circle>
-                <circle r="4.5"><animateMotion dur="1.5s" begin="0.2s" repeatCount="indefinite" path="M370,225 C430,150 450,72 500,72" /></circle>
-                <circle r="4.5"><animateMotion dur="1.2s" begin="0.6s" repeatCount="indefinite" path="M670,72 L730,72" /></circle>
-                <circle r="4.5"><animateMotion dur="2.4s" begin="0.3s" repeatCount="indefinite" path="M370,240 L1000,240" /></circle>
-                <circle r="4.5"><animateMotion dur="1.5s" begin="0.4s" repeatCount="indefinite" path="M370,255 C430,330 450,412 500,412" /></circle>
-                <circle r="4.5"><animateMotion dur="1.2s" begin="0.9s" repeatCount="indefinite" path="M660,412 L730,412" /></circle>
-                <circle r="4.5"><animateMotion dur="1.6s" begin="1.2s" repeatCount="indefinite" path="M890,405 C975,378 990,300 1005,268" /></circle>
+              <g class="arch__labels" aria-hidden="true">
+                <text data-label="client-api" x="204" y="262">HTTPS</text>
+                <text data-label="api-rag" class="start" x="478" y="170">query</text>
+                <text data-label="rag-vector" x="754" y="64">retrieve</text>
+                <text data-label="api-data" x="710" y="262">read · write</text>
+                <text data-label="api-redis" class="start" x="345" y="472">cache · enqueue</text>
+                <text data-label="api-kafka" class="end" x="462" y="398">publish</text>
+                <text data-label="kafka-consumers" x="754" y="418">consume</text>
+                <text data-label="consumers-data" class="start" x="1068" y="384">analytics</text>
+                <text data-label="redis-celery" x="469" y="530">tasks</text>
+                <text data-label="celery-data" x="930" y="560">results</text>
               </g>
 
-              <!-- nodes -->
+              <!-- live traffic -->
+              <g class="arch__packets" aria-hidden="true">
+                <circle data-wire="client-api" r="4"><animateMotion dur="1.2s" repeatCount="indefinite" path="M160,272 L248,272" /></circle>
+                <circle data-wire="api-data" r="4"><animateMotion dur="2.6s" begin="0.3s" repeatCount="indefinite" path="M420,272 L998,272" /></circle>
+                <circle data-wire="api-rag" r="4"><animateMotion dur="1.5s" begin="0.2s" repeatCount="indefinite" path="M420,256 C470,256 468,74 518,74" /></circle>
+                <circle data-wire="rag-vector" r="4"><animateMotion dur="1.1s" begin="0.6s" repeatCount="indefinite" path="M710,74 L798,74" /></circle>
+                <circle data-wire="api-kafka" r="4"><animateMotion dur="1.5s" begin="0.4s" repeatCount="indefinite" path="M400,304 C450,320 468,428 518,428" /></circle>
+                <circle data-wire="kafka-consumers" r="4"><animateMotion dur="1.1s" begin="0.9s" repeatCount="indefinite" path="M710,428 L798,428" /></circle>
+                <circle data-wire="consumers-data" r="4"><animateMotion dur="1.4s" begin="1.2s" repeatCount="indefinite" path="M990,428 C1040,428 1060,380 1060,314" /></circle>
+                <circle data-wire="redis-celery" r="4"><animateMotion dur="1.2s" begin="0.5s" repeatCount="indefinite" path="M420,540 L518,540" /></circle>
+                <circle data-wire="celery-data" r="4"><animateMotion dur="2.4s" begin="1s" repeatCount="indefinite" path="M710,540 C980,540 1150,520 1150,314" /></circle>
+              </g>
+
+              <!-- components -->
               <g class="arch__node" data-node="client" tabindex="0" role="button" aria-label="Client">
-                <rect x="20" y="208" width="130" height="64" rx="14" />
-                <text x="85" y="236">Client</text>
-                <text class="arch__sub" x="85" y="256">Web · Mobile</text>
+                <rect x="24" y="240" width="136" height="64" rx="14" />
+                <text x="92" y="268">Client</text>
+                <text class="arch__sub" x="92" y="288">Web · Mobile</text>
               </g>
               <g class="arch__node arch__node--accent" data-node="api" tabindex="0" role="button" aria-label="API Layer">
-                <rect x="220" y="208" width="150" height="64" rx="14" />
-                <text x="295" y="236">API Layer</text>
-                <text class="arch__sub" x="295" y="256">FastAPI · DRF</text>
-              </g>
-              <g class="arch__node arch__node--ai" data-node="ai" tabindex="0" role="button" aria-label="GenAI and RAG">
-                <rect x="500" y="40" width="170" height="64" rx="14" />
-                <text x="585" y="68">GenAI · RAG</text>
-                <text class="arch__sub" x="585" y="88">LangChain</text>
-              </g>
-              <g class="arch__node" data-node="vector" tabindex="0" role="button" aria-label="Vector DB">
-                <rect x="730" y="40" width="150" height="64" rx="14" />
-                <text x="805" y="68">Vector DB</text>
-                <text class="arch__sub" x="805" y="88">ChromaDB</text>
+                <rect x="250" y="240" width="170" height="64" rx="14" />
+                <text x="335" y="268">API Layer</text>
+                <text class="arch__sub" x="335" y="288">FastAPI · DRF · JWT</text>
               </g>
               <g class="arch__node" data-node="data" tabindex="0" role="button" aria-label="Datastores">
-                <rect x="1000" y="200" width="180" height="80" rx="14" />
-                <text x="1090" y="236">Datastores</text>
-                <text class="arch__sub" x="1090" y="256">PostgreSQL · MongoDB</text>
+                <rect x="1000" y="232" width="180" height="80" rx="14" />
+                <text x="1090" y="268">Datastores</text>
+                <text class="arch__sub" x="1090" y="288">PostgreSQL · MongoDB</text>
+              </g>
+              <g class="arch__node" data-node="rag" tabindex="0" role="button" aria-label="GenAI and RAG">
+                <rect x="520" y="42" width="190" height="64" rx="14" />
+                <text x="615" y="70">GenAI · RAG</text>
+                <text class="arch__sub" x="615" y="90">LangChain · LLM</text>
+              </g>
+              <g class="arch__node" data-node="vector" tabindex="0" role="button" aria-label="Vector DB">
+                <rect x="800" y="42" width="170" height="64" rx="14" />
+                <text x="885" y="70">Vector DB</text>
+                <text class="arch__sub" x="885" y="90">ChromaDB</text>
               </g>
               <g class="arch__node" data-node="kafka" tabindex="0" role="button" aria-label="Event Bus">
-                <rect x="500" y="380" width="160" height="64" rx="14" />
-                <text x="580" y="408">Event Bus</text>
-                <text class="arch__sub" x="580" y="428">Apache Kafka</text>
+                <rect x="520" y="396" width="190" height="64" rx="14" />
+                <text x="615" y="424">Event Bus</text>
+                <text class="arch__sub" x="615" y="444">Apache Kafka</text>
               </g>
-              <g class="arch__node" data-node="workers" tabindex="0" role="button" aria-label="Workers">
-                <rect x="730" y="380" width="160" height="64" rx="14" />
-                <text x="810" y="408">Workers</text>
-                <text class="arch__sub" x="810" y="428">Celery · async</text>
+              <g class="arch__node" data-node="consumers" tabindex="0" role="button" aria-label="Stream Consumers">
+                <rect x="800" y="396" width="190" height="64" rx="14" />
+                <text x="895" y="424">Stream Consumers</text>
+                <text class="arch__sub" x="895" y="444">real-time analytics</text>
               </g>
-              <g class="arch__node arch__node--redis" data-node="redis" tabindex="0" role="button" aria-label="Redis">
-                <rect x="225" y="372" width="140" height="56" rx="14" />
-                <text x="295" y="396">Redis</text>
-                <text class="arch__sub" x="295" y="414">cache · result store</text>
+              <g class="arch__node" data-node="redis" tabindex="0" role="button" aria-label="Redis">
+                <rect x="250" y="508" width="170" height="64" rx="14" />
+                <text x="335" y="536">Redis</text>
+                <text class="arch__sub" x="335" y="556">cache · task broker</text>
+              </g>
+              <g class="arch__node" data-node="celery" tabindex="0" role="button" aria-label="Workers">
+                <rect x="520" y="508" width="190" height="64" rx="14" />
+                <text x="615" y="536">Workers</text>
+                <text class="arch__sub" x="615" y="556">Celery · async jobs</text>
               </g>
             </svg>
           </div>
@@ -441,15 +476,31 @@
             <svg class="ico" aria-hidden="true"><use href="#i-arrow-left-right"/></svg> Swipe to explore the flow
           </p>
 
-          <div class="arch__info" aria-live="polite">
-            <span class="arch__tag" id="archTag">API Layer</span>
-            <p id="archText">FastAPI &amp; DRF services own auth (JWT / OAuth2), role-based access and validation — serving sync reads directly and publishing async work as events.</p>
+          <div class="arch__panel">
+            <div class="arch__info" aria-live="polite">
+              <div class="arch__info-head">
+                <span class="arch__tag" id="archTag">Overview</span>
+                <span class="arch__step" id="archStep">9 components · 3 paths</span>
+              </div>
+              <p class="arch__text" id="archText">One API layer in front of three paths: a synchronous request path, async events &amp; background tasks, and a GenAI retrieval path. Press Trace a request to follow a call through the system, or hover any component.</p>
+              <p class="arch__meta" id="archMeta"></p>
+            </div>
+            <div class="arch__controls">
+              <button type="button" class="arch__btn" id="archPrev" aria-label="Previous step" disabled>←</button>
+              <button type="button" class="arch__btn arch__btn--play" id="archPlay" aria-pressed="false">
+                <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                <span id="archPlayLabel">Trace a request</span>
+              </button>
+              <button type="button" class="arch__btn" id="archNext" aria-label="Next step">→</button>
+            </div>
+            <div class="arch__dots" id="archDots" aria-label="Walkthrough steps"></div>
           </div>
 
           <div class="arch__legend">
-            <span><i style="background:var(--accent)"></i> live request &amp; data flow</span>
-            <span><i class="arch__legend-dash"></i> cache / result store</span>
-            <span class="arch__note">Sync path to datastores &amp; RAG · async events via Kafka → Celery.</span>
+            <span><i class="arch__key"></i> synchronous request</span>
+            <span><i class="arch__key arch__key--async"></i> async · events &amp; tasks</span>
+            <span><i class="arch__key arch__key--cache"></i> cache · broker</span>
+            <span><i class="arch__key arch__key--dot"></i> live traffic</span>
           </div>
         </div>
       </div>

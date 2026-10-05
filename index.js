@@ -1043,68 +1043,232 @@
     if (orbit) idleIO.observe(orbit);
   }
 
-  // ---------- Architecture: trace a node ----------
-  const ARCH = {
-    client: ["Client", "Web and mobile clients reach the API over REST, GraphQL or WebSockets depending on the workflow."],
-    api: ["API Layer", "FastAPI & DRF services own auth (JWT / OAuth2), role-based access and validation — serving sync reads directly and publishing async work as events."],
-    ai: ["GenAI · RAG", "LangChain pipelines handle chunking, embeddings, retrieval tuning and grounded generation for summaries and Q&A."],
-    vector: ["Vector DB", "ChromaDB stores document embeddings so retrieval stays semantic and fast."],
-    data: ["Datastores", "Hybrid data layer — PostgreSQL for relational metadata, MongoDB for schema-less responses, with PgBouncer connection pooling."],
-    kafka: ["Event Bus", "Apache Kafka decouples writes from processing, so real-time analytics never block the request path."],
-    workers: ["Workers", "Celery workers run notifications, data sync and heavy computation off the request path."],
-    redis: ["Redis", "Cache for hot reads and the Celery result store."],
+  // ---------- Architecture: hover a component, or trace a request step by step ----------
+  const ARCH_NODES = {
+    client: { name: "Client", tech: "Web · Mobile" },
+    api: { name: "API Layer", tech: "FastAPI · Django REST · GraphQL · JWT / OAuth2" },
+    redis: { name: "Redis", tech: "Redis as cache and Celery broker" },
+    data: { name: "Datastores", tech: "PostgreSQL · MongoDB · PgBouncer" },
+    kafka: { name: "Event Bus", tech: "Apache Kafka" },
+    consumers: { name: "Stream Consumers", tech: "Kafka consumers" },
+    celery: { name: "Workers", tech: "Celery · Redis / RabbitMQ broker" },
+    rag: { name: "GenAI · RAG", tech: "LangChain · embeddings · LLM" },
+    vector: {
+      name: "Vector DB",
+      tech: "ChromaDB",
+      text: "ChromaDB stores document embeddings, so the RAG pipeline can pull the chunks most relevant to each question.",
+    },
   };
+
+  const ARCH_STEPS = [
+    { node: "client", wires: ["client-api"], title: "Request in",
+      text: "A web or mobile client calls the API over HTTPS — REST, GraphQL or WebSockets, depending on the workflow." },
+    { node: "api", wires: ["client-api"], title: "Auth & validation",
+      text: "FastAPI / DRF verifies the JWT, enforces role-based, tenant-scoped access and validates the payload before any work happens." },
+    { node: "redis", wires: ["api-redis"], title: "Cache first",
+      text: "Hot reads come straight from Redis. Anything slow is enqueued as a background task instead of blocking the response." },
+    { node: "data", wires: ["api-data"], title: "Hybrid data layer",
+      text: "Everything else reads and writes PostgreSQL for relational metadata and MongoDB for schema-less documents, behind PgBouncer connection pooling." },
+    { node: "kafka", wires: ["api-kafka"], title: "Publish events",
+      text: "Writes emit domain events to Apache Kafka, so downstream processing never slows down the request path." },
+    { node: "consumers", wires: ["kafka-consumers", "consumers-data"], title: "Real-time processing",
+      text: "Kafka consumers turn the event stream into real-time processing and analytics, then write the results back." },
+    { node: "celery", wires: ["redis-celery", "celery-data"], title: "Background jobs",
+      text: "Celery workers pick tasks off the broker — notifications, data sync, heavy computation — and persist the results." },
+    { node: "rag", wires: ["api-rag", "rag-vector"], title: "Grounded GenAI",
+      text: "Questions and summaries run through a LangChain RAG pipeline: retrieve the most relevant chunks from ChromaDB, then let an LLM answer grounded in them." },
+  ];
+
   const arch = $("#arch");
   if (arch) {
     const nodes = $$("[data-node]", arch);
-    const wires = $$("[data-link]", arch);
-    const tag = $("#archTag");
-    const text = $("#archText");
+    const wirePaths = $$("path[data-wire]", arch);
+    const packets = $$("circle[data-wire]", arch);
+    const labels = $$("[data-label]", arch);
     const info = $(".arch__info", arch);
-    let current = "api";
-    const select = (id) => {
-      const near = new Set([id]);
-      wires.forEach((w) => {
-        const ends = w.dataset.link.split(" ");
-        const lit = ends.includes(id);
-        w.classList.toggle("is-lit", lit);
-        if (lit) ends.forEach((e) => near.add(e));
-      });
+    const tagEl = $("#archTag");
+    const stepEl = $("#archStep");
+    const textEl = $("#archText");
+    const metaEl = $("#archMeta");
+    const playBtn = $("#archPlay");
+    const playLabel = $("#archPlayLabel");
+    const prevBtn = $("#archPrev");
+    const nextBtn = $("#archNext");
+    const dotsEl = $("#archDots");
+    const OVERVIEW = { tag: tagEl.textContent, step: stepEl.textContent, text: textEl.textContent, meta: "" };
+    const STEP_MS = 3800;
+    const LAST = ARCH_STEPS.length - 1;
+    let step = -1; // -1 = overview
+    let playing = false;
+    let timer = 0;
+
+    const setPanel = ({ tag, step: stepText = "", text, meta = "" }) => {
+      if (tagEl.textContent === tag && textEl.textContent === text && stepEl.textContent === stepText) return;
+      tagEl.textContent = tag;
+      stepEl.textContent = stepText;
+      textEl.textContent = text;
+      metaEl.textContent = meta;
+      info.classList.remove("is-swap");
+      void info.offsetWidth;
+      info.classList.add("is-swap");
+    };
+
+    // focus one component and light the given connections (plus whatever they connect to)
+    const highlight = (focus, wireIds = []) => {
+      const lit = new Set(wireIds);
+      const near = new Set(focus ? [focus] : []);
+      wireIds.forEach((w) => w.split("-").forEach((n) => near.add(n)));
+      wirePaths.forEach((p) => p.classList.toggle("is-lit", lit.has(p.dataset.wire)));
+      packets.forEach((c) => c.classList.toggle("is-lit", lit.has(c.dataset.wire)));
+      labels.forEach((l) => l.classList.toggle("is-lit", lit.has(l.dataset.label)));
       nodes.forEach((n) => {
-        n.classList.toggle("is-lit", n.dataset.node === id);
+        n.classList.toggle("is-lit", n.dataset.node === focus);
         n.classList.toggle("is-near", near.has(n.dataset.node));
       });
-      arch.classList.add("has-focus");
-      if (id !== current && ARCH[id]) {
-        current = id;
-        tag.textContent = ARCH[id][0];
-        text.textContent = ARCH[id][1];
-        info.classList.remove("is-swap");
-        void info.offsetWidth;
-        info.classList.add("is-swap");
+      arch.classList.toggle("has-focus", Boolean(focus));
+    };
+
+    const dots = ARCH_STEPS.map((s, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "arch__dot";
+      b.setAttribute("aria-label", `Step ${i + 1}: ${s.title}`);
+      b.addEventListener("click", () => {
+        stop();
+        showStep(i);
+      });
+      dotsEl?.appendChild(b);
+      return b;
+    });
+
+    const updateControls = () => {
+      playLabel.textContent = playing ? "Pause" : step === LAST ? "Replay" : step >= 0 ? "Resume" : "Trace a request";
+      playBtn.setAttribute("aria-pressed", String(playing));
+      prevBtn.disabled = step < 0;
+      nextBtn.disabled = step >= LAST;
+      dots.forEach((d, i) => {
+        d.classList.toggle("is-active", i === step);
+        d.classList.toggle("is-done", i < step);
+      });
+    };
+
+    // on narrow screens the diagram scrolls sideways — bring the active component into view
+    const scroller = $(".arch__scroll", arch);
+    const centerOn = (id) => {
+      if (!scroller || scroller.scrollWidth <= scroller.clientWidth + 4) return;
+      const n = nodes.find((x) => x.dataset.node === id);
+      if (!n) return;
+      const r = n.getBoundingClientRect();
+      const s = scroller.getBoundingClientRect();
+      const left = scroller.scrollLeft + (r.left + r.width / 2) - (s.left + s.width / 2);
+      scroller.scrollTo({ left, behavior: prefersReduced ? "auto" : "smooth" });
+    };
+
+    const showStep = (i) => {
+      step = i;
+      if (i < 0) {
+        highlight(null);
+        setPanel(OVERVIEW);
+      } else {
+        const s = ARCH_STEPS[i];
+        highlight(s.node, s.wires);
+        centerOn(s.node);
+        setPanel({
+          tag: s.title,
+          step: `Step ${i + 1} / ${ARCH_STEPS.length} · ${ARCH_NODES[s.node].name}`,
+          text: s.text,
+          meta: ARCH_NODES[s.node].tech,
+        });
+      }
+      updateControls();
+    };
+
+    const wiresOf = (id) => wirePaths.map((p) => p.dataset.wire).filter((w) => w.split("-").includes(id));
+
+    const showNode = (id) => {
+      const node = ARCH_NODES[id];
+      const wires = wiresOf(id);
+      const peers = [...new Set(wires.flatMap((w) => w.split("-")).filter((n) => n !== id))].map((n) => ARCH_NODES[n].name);
+      highlight(id, wires);
+      setPanel({
+        tag: node.name,
+        text: ARCH_STEPS.find((s) => s.node === id)?.text || node.text,
+        meta: `${node.tech} · connects to ${peers.join(", ")}`,
+      });
+    };
+
+    function stop() {
+      playing = false;
+      clearTimeout(timer);
+      updateControls();
+    }
+
+    const advance = () => {
+      if (!playing) return;
+      if (step >= LAST) {
+        stop();
+        return;
+      }
+      showStep(step + 1);
+      timer = setTimeout(advance, STEP_MS);
+    };
+
+    const play = () => {
+      if (step >= LAST) step = -1;
+      playing = true;
+      advance();
+    };
+
+    // back to whatever the walkthrough was showing before a hover / focus
+    const restore = () => {
+      showStep(step);
+      if (playing) {
+        clearTimeout(timer);
+        timer = setTimeout(advance, STEP_MS);
       }
     };
-    const clear = () => {
-      arch.classList.remove("has-focus");
-      nodes.forEach((n) => n.classList.remove("is-lit", "is-near"));
-      wires.forEach((w) => w.classList.remove("is-lit"));
-    };
+
+    playBtn.addEventListener("click", () => (playing ? stop() : play()));
+    prevBtn.addEventListener("click", () => {
+      stop();
+      showStep(Math.max(-1, step - 1));
+    });
+    nextBtn.addEventListener("click", () => {
+      stop();
+      showStep(Math.min(LAST, step + 1));
+    });
+
     nodes.forEach((n) => {
       const id = n.dataset.node;
-      n.addEventListener("pointerenter", () => select(id));
-      n.addEventListener("click", () => select(id));
-      n.addEventListener("focus", () => select(id));
+      n.addEventListener("pointerenter", (e) => {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(timer);
+        showNode(id);
+      });
+      n.addEventListener("click", () => {
+        stop();
+        showNode(id);
+      });
+      n.addEventListener("focus", () => {
+        clearTimeout(timer);
+        showNode(id);
+      });
       n.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          select(id);
-        }
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        stop();
+        showNode(id);
       });
     });
-    archSvg?.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && clear());
+    archSvg?.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && restore());
     arch.addEventListener("focusout", (e) => {
-      if (!arch.contains(e.relatedTarget)) clear();
+      if (!arch.contains(e.relatedTarget)) restore();
     });
+
+    // don't keep stepping through a walkthrough nobody can see
+    new IntersectionObserver(([e]) => !e.isIntersecting && playing && stop()).observe(arch);
+
+    showStep(-1);
   }
 
   // ---------- Pointer-driven flourishes (fine pointers only) ----------
