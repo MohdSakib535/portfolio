@@ -1,0 +1,108 @@
+name: Deploy portfolio to S3
+
+on:
+  push:
+    branches: [master] # every push to master goes live
+  # Actions tab → "Run workflow" → choose a branch in "Use workflow from" → Run.
+  # That branch's code is what gets deployed (the branch must contain this file).
+  workflow_dispatch:
+
+permissions:
+  id-token: write # only used if you switch to the OIDC role (see DEPLOY.md)
+  contents: read
+
+# never let two deploys race each other; a newer push waits for the running one
+concurrency:
+  group: deploy-portfolio
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      CF_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID || 'E3CIEJVE4HXEXB' }}
+
+    steps:
+      - name: Check deploy settings
+        run: |
+          missing=0
+          for name in S3_BUCKET AWS_REGION; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions)"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - uses: actions/checkout@v7 # checks out the branch the run was started from
+
+      - name: Sanity-check the site
+        run: |
+          test -f index.html
+          test -f index.css
+          node --check index.js
+
+      # Recommended: set the repository variable AWS_ROLE_ARN to use short-lived OIDC
+      # credentials. Until then, the existing access-key secrets are used.
+      - name: Configure AWS credentials (OIDC role)
+        if: ${{ vars.AWS_ROLE_ARN != '' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Configure AWS credentials (access keys)
+        if: ${{ vars.AWS_ROLE_ARN == '' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Earlier deploys synced the whole checkout, .git/ and .github/ included.
+      # They're excluded below, so sync --delete would never remove them on its own.
+      - name: Remove repo-only files from the bucket
+        run: |
+          aws s3 rm "s3://$S3_BUCKET/.git/" --recursive --only-show-errors
+          aws s3 rm "s3://$S3_BUCKET/.github/" --recursive --only-show-errors
+
+      # Font files never change name, so browsers may keep them for a year.
+      - name: Upload fonts (cached 1 year)
+        run: |
+          aws s3 sync fonts "s3://$S3_BUCKET/fonts" \
+            --delete \
+            --exclude "*.DS_Store" \
+            --content-type "font/woff2" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      # index.html / index.css / index.js keep the same names between deploys, so
+      # browsers always revalidate them (cheap 304s via ETag). s-maxage lets CloudFront
+      # cache them for a day — the invalidation step below clears it on every deploy.
+      - name: Upload site (always revalidated)
+        run: |
+          aws s3 sync . "s3://$S3_BUCKET" \
+            --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude ".gitignore" \
+            --exclude "*.md" \
+            --exclude "*.DS_Store" \
+            --exclude "fonts/*" \
+            --cache-control "public, max-age=0, s-maxage=86400, must-revalidate"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$CF_DISTRIBUTION_ID" \
+            --paths "/*" \
+            --query "Invalidation.Id" --output text
+
+      - name: Summary
+        run: |
+          {
+            echo "### Portfolio deployed"
+            echo "- Branch: \`$GITHUB_REF_NAME\` @ \`$(git rev-parse --short HEAD)\`"
+            echo "- CloudFront invalidated: \`$CF_DISTRIBUTION_ID\`"
+          } >> "$GITHUB_STEP_SUMMARY"
